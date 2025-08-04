@@ -6,9 +6,31 @@ import PodcastPanel from "@/components/dashboard/PodcastPanel";
 import QuickNavTabs from "@/components/dashboard/QuickNavTabs";
 import { Loader2 } from "lucide-react";
 
+interface FileType {
+  id: string;
+  // Add other properties if needed
+}
+
+interface PodcastSection {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  duration: string;
+  audioUrl?: string | null;
+}
+
+interface Podcast {
+  id: string;
+  title: string;
+  description: string;
+  totalDuration: string;
+  sections: PodcastSection[];
+}
+
 interface PodcastPageWithSidebarProps {
-  file: any;
-  podcast?: any;
+  file: FileType;
+  podcast?: Podcast;
 }
 
 export default function PodcastPageWithSidebar({ file, podcast }: PodcastPageWithSidebarProps) {
@@ -55,4 +77,4 @@ export default function PodcastPageWithSidebar({ file, podcast }: PodcastPageWit
       )}
     </div>
   );
-} 
+}

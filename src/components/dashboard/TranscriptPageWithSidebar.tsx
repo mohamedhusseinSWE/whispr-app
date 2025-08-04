@@ -5,7 +5,7 @@ import PDFSidebar from "@/components/layout/PDFSidebar";
 import QuickNavTabs from "@/components/dashboard/QuickNavTabs";
 import { Button } from "@/components/ui/button";
 import { Loader2, FileText, RefreshCw } from "lucide-react";
-import { getTranscript, getFileData } from "@/lib/actions";
+import { getTranscript } from "@/lib/actions";
 
 interface TranscriptPageWithSidebarProps {
   file: { id: string; name: string; type: string; size: number; uploadedAt: string };
@@ -38,9 +38,9 @@ export default function TranscriptPageWithSidebar({ file }: TranscriptPageWithSi
           console.log('Transcript loaded successfully:', transcriptData.transcript);
           setTranscript(transcriptData.transcript?.content || "");
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error('Error fetching transcript:', err);
-        setError(err.message || 'Failed to fetch transcript');
+        setError((err as Error).message || 'Failed to fetch transcript');
       } finally {
         setLoading(false);
       }
@@ -102,9 +102,9 @@ export default function TranscriptPageWithSidebar({ file }: TranscriptPageWithSi
       } else {
         setTranscript(transcriptData.transcript?.content || "");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error('Error refreshing transcript:', err);
-      setError(err.message || 'Failed to refresh transcript');
+      setError((err as Error).message || 'Failed to refresh transcript');
     } finally {
       setLoading(false);
     }
@@ -255,4 +255,4 @@ export default function TranscriptPageWithSidebar({ file }: TranscriptPageWithSi
       )}
     </div>
   );
-} 
+}

@@ -285,9 +285,9 @@ export default function QuizPanel({ quiz }: QuizPanelProps) {
                 <div className="text-center">
                   <p className="text-sm text-gray-600 mb-4">
                     {correctCount === total
-                      ? "Perfect score! You're a quiz master! 🏆"
+                      ? "Perfect score! You&apos;re a quiz master! 🏆"
                       : correctCount >= total * 0.8
-                      ? "Excellent work! You're doing great! 🌟"
+                      ? "Excellent work! You&apos;re doing great! 🌟"
                       : correctCount >= total * 0.6
                       ? "Good job! Keep practicing to improve! 💪"
                       : "Keep studying! Practice makes perfect! 📚"}

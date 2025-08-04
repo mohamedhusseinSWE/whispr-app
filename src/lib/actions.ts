@@ -7,6 +7,13 @@ import { getUserFromRequest } from "./auth";
 import { uploadAudio } from "./audio-upload";
 import { generateAudioFromText, createPodcastSections, formatDuration } from "./audio-generation";
 
+interface PodcastSectionInput {
+  title: string;
+  description: string;
+  content: string;
+  duration: string;
+}
+
 export async function getQuizData(fileId: string) {
   try {
     const quiz = await db.quiz.findFirst({
@@ -121,8 +128,6 @@ export async function createAllContent(fileId: string) {
     if (!chunks.length) {
       return { error: "No PDF content found for this file." };
     }
-
-    const pdfContent = chunks.map((c) => c.text).join("\n\n");
 
     // Check if content already exists
     const existingQuiz = await db.quiz.findFirst({ where: { fileId } });
@@ -336,7 +341,7 @@ export async function createPodcast(fileId: string) {
     // Create sections in database
     console.log("=== CREATING SECTIONS IN DATABASE ===");
     const createdSections = await Promise.all(
-      sections.map(async (section: any, index: number) => {
+      sections.map(async (section: PodcastSectionInput, index: number) => {
         console.log(`Creating section ${index + 1}:`, section.title);
         return await db.podcastSection.create({
           data: {
@@ -487,4 +492,4 @@ export async function createPodcast(fileId: string) {
     console.error("Error creating podcast:", error);
     return { error: "Failed to create podcast" };
   }
-} 
+}

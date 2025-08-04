@@ -9,7 +9,7 @@ import { getPodcast } from "@/lib/actions";
 
 interface PodcastPanelProps {
   fileId: string;
-  initialPodcast?: any;
+  initialPodcast?: Podcast;
 }
 
 interface PodcastSection {
@@ -499,4 +499,4 @@ const PodcastPanel: React.FC<PodcastPanelProps> = ({ fileId, initialPodcast }) =
   );
 };
 
-export default PodcastPanel; 
+export default PodcastPanel;
