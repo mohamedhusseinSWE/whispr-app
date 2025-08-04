@@ -10,13 +10,18 @@ interface Flashcard {
   id: string;
   question: string;
   answer: string;
-  // Add other fields as needed
+}
+
+interface Flashcards {
+  id: string;
+  title: string;
+  cards: Flashcard[];
 }
 
 interface FileData {
   id: string;
   name: string;
-  // Add other fields as needed
+  url: string;
 }
 
 interface FlashcardsPageProps {
@@ -25,7 +30,7 @@ interface FlashcardsPageProps {
 
 export default function FlashcardsPage({ params }: FlashcardsPageProps) {
   const [fileId, setFileId] = useState<string>("");
-  const [flashcards, setFlashcards] = useState<Flashcard[] | null>(null);
+  const [flashcards, setFlashcards] = useState<Flashcards | null>(null);
   const [file, setFile] = useState<FileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [generating, setGenerating] = useState(false);
@@ -53,7 +58,7 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
       if (flashcardsData.error) {
         setFlashcards(null);
       } else {
-        setFlashcards(flashcardsData.flashcards);
+        setFlashcards(flashcardsData.flashcards || null);
       }
 
       if (!fileData.file) {
@@ -143,5 +148,5 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
     );
   }
 
-  return <FlashcardsPageWithSidebar file={file} flashcards={flashcards} />;
+  return <FlashcardsPageWithSidebar file={file} />;
 }

@@ -15,6 +15,7 @@ import {
   Clock,
   AlertCircle,
 } from "lucide-react";
+import { getQuiz, getFlashcards, getTranscript } from "@/lib/actions";
 
 interface QuickNavTabsProps {
   fileId: string;
@@ -82,26 +83,23 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
   // Check generation status on mount
   useEffect(() => {
     const checkGenerationStatus = async () => {
-      // Check if content exists for each generation type
-      const endpoints = [
-        { key: "quiz", url: `/api/quiz/${fileId}` },
-        { key: "flashcards", url: `/api/flashcards/${fileId}` },
-        { key: "transcript", url: `/api/transcript/${fileId}` },
-        { key: "podcast", url: `/api/podcast/${fileId}` },
-      ];
+      try {
+        // Check if content exists for each generation type using server actions
+        const [quizResult, flashcardsResult, transcriptResult] =
+          await Promise.all([
+            getQuiz(fileId),
+            getFlashcards(fileId),
+            getTranscript(fileId),
+          ]);
 
-      for (const endpoint of endpoints) {
-        try {
-          const response = await fetch(endpoint.url);
-          if (response.ok) {
-            setGenerationStatus((prev) => ({
-              ...prev,
-              [endpoint.key]: "ready",
-            }));
-          }
-        } catch {
-          // Silently handle errors when checking generation status
-        }
+        setGenerationStatus((prev) => ({
+          ...prev,
+          quiz: quizResult.error ? "idle" : "ready",
+          flashcards: flashcardsResult.error ? "idle" : "ready",
+          transcript: transcriptResult.error ? "idle" : "ready",
+        }));
+      } catch {
+        // Silently handle errors when checking generation status
       }
     };
 

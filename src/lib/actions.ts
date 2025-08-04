@@ -51,6 +51,13 @@ export async function getFileData(fileId: string) {
   try {
     const file = await db.file.findUnique({
       where: { id: fileId },
+      select: {
+        id: true,
+        name: true,
+        type: true,
+        size: true,
+        url: true,
+      },
     });
 
     return { file };

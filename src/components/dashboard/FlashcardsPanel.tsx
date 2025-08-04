@@ -9,6 +9,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getFlashcards } from "@/lib/actions";
 
 interface Flashcard {
   id: string;
@@ -41,23 +42,24 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
 
         console.log("Fetching flashcards for fileId:", fileId);
 
-        // First try to get existing flashcards
-        const response = await fetch(`/api/flashcards/${fileId}`);
+        // Use server action to get existing flashcards
+        const result = await getFlashcards(fileId);
 
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Flashcards loaded successfully:", data.flashcards);
-          setFlashcards(data.flashcards);
-        } else {
+        if (result.error) {
           console.log("No flashcards found, will need to generate");
           setFlashcards(null);
           setError(
             "No flashcards found. Click 'Generate Flashcards' to create them from your PDF content.",
           );
+        } else {
+          console.log("Flashcards loaded successfully:", result.flashcards);
+          setFlashcards(result.flashcards || null);
         }
-      } catch (err: Error) {
+      } catch (err: unknown) {
         console.error("Error fetching flashcards:", err);
-        setError(err.message || "Failed to load flashcards");
+        setError(
+          err instanceof Error ? err.message : "Failed to load flashcards",
+        );
       } finally {
         setLoading(false);
       }
@@ -94,7 +96,7 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
           `Failed to generate flashcards: ${errorData.error || "Unknown error"}`,
         );
       }
-    } catch (error: Error) {
+    } catch (error: unknown) {
       console.error("Error generating flashcards:", error);
       setError("Failed to generate flashcards. Please try again.");
     } finally {
@@ -107,20 +109,21 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/flashcards/${fileId}`);
+      const result = await getFlashcards(fileId);
 
-      if (response.ok) {
-        const data = await response.json();
-        setFlashcards(data.flashcards);
-      } else {
+      if (result.error) {
         setFlashcards(null);
         setError(
           "No flashcards found. Click 'Generate Flashcards' to create them from your PDF content.",
         );
+      } else {
+        setFlashcards(result.flashcards || null);
       }
-    } catch (err: Error) {
+    } catch (err: unknown) {
       console.error("Error refreshing flashcards:", err);
-      setError(err.message || "Failed to refresh flashcards");
+      setError(
+        err instanceof Error ? err.message : "Failed to refresh flashcards",
+      );
     } finally {
       setLoading(false);
     }

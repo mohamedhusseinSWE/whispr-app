@@ -24,6 +24,8 @@ interface Quiz {
 interface FileData {
   id: string;
   name: string;
+  type: string;
+  size: number;
   url: string;
 }
 
@@ -63,14 +65,23 @@ export default function QuizPage({ params }: QuizPageProps) {
         setError(quizData.error);
         setQuiz(null);
       } else {
-        setQuiz(quizData.quiz);
+        setQuiz(quizData.quiz || null);
       }
 
       if (!fileData.file) {
         setError("File not found");
         setFile(null);
       } else {
-        setFile(fileData.file);
+        setFile({
+          id: fileData.file.id,
+          name: fileData.file.name,
+          url: fileData.file.url,
+          type:
+            "type" in fileData.file
+              ? (fileData.file as any).type
+              : "application/pdf",
+          size: "size" in fileData.file ? (fileData.file as any).size : 0,
+        });
       }
     } catch (error) {
       console.error("Error fetching quiz data:", error);
@@ -187,5 +198,5 @@ export default function QuizPage({ params }: QuizPageProps) {
   // Debug: Log the quiz data being passed to the component
   console.log("Rendering QuizPageWithSidebar with quiz:", quiz);
 
-  return <QuizPageWithSidebar file={file} quiz={quiz} />;
+  return <QuizPageWithSidebar file={file} />;
 }

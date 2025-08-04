@@ -193,8 +193,8 @@ export default function PodcastPage({ params }: PodcastPageProps) {
           id: section.id,
           title: section.title,
           description: "", // default value
-          content: "",     // default value
-          duration: "",    // default value
+          content: "", // default value
+          duration: "", // default value
           audioUrl: section.audioUrl ?? null,
         })),
       }

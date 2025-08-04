@@ -114,12 +114,7 @@ export default function SettingsPage() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <MainSidebar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        activeView={activeView}
-        setActiveView={setActiveView}
-      />
+      <MainSidebar sidebarOpen={sidebarOpen} />
 
       <div
         className={`flex-1 overflow-auto ${sidebarOpen ? "ml-64" : "ml-16"} transition-all duration-300`}
