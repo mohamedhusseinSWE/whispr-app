@@ -174,9 +174,6 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
       file={{
         id: file.id,
         name: file.name,
-        type: "pdf", // Default type since it's not in the model
-        size: 0, // Default size since it's not in the model
-        uploadedAt: file.createdAt.toISOString(),
       }}
     />
   );
