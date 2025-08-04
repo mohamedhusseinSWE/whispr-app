@@ -12,7 +12,9 @@ interface QuizPageWithSidebarProps {
   file: { id: string; name: string; type: string; size: number; url: string };
 }
 
-export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) {
+export default function QuizPageWithSidebar({
+  file,
+}: QuizPageWithSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("quiz");
   const [loading, setLoading] = useState(false);
@@ -27,21 +29,23 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
         setLoading(true);
         setLoadingMessage("Loading Quiz...");
         setError(null);
-        
-        console.log('Fetching quiz for fileId:', file.id);
+
+        console.log("Fetching quiz for fileId:", file.id);
         const quizData = await getQuiz(file.id);
 
         if (quizData.error) {
-          console.log('Quiz not found, will need to generate:', quizData.error);
+          console.log("Quiz not found, will need to generate:", quizData.error);
           setQuiz(null);
-          setError("No quiz found. Click 'Generate Quiz' to create one from your PDF content.");
+          setError(
+            "No quiz found. Click 'Generate Quiz' to create one from your PDF content.",
+          );
         } else {
-          console.log('Quiz loaded successfully:', quizData.quiz);
+          console.log("Quiz loaded successfully:", quizData.quiz);
           setQuiz(quizData.quiz);
         }
       } catch (err: any) {
-        console.error('Error fetching quiz:', err);
-        setError(err.message || 'Failed to fetch quiz');
+        console.error("Error fetching quiz:", err);
+        setError(err.message || "Failed to fetch quiz");
       } finally {
         setLoading(false);
       }
@@ -57,33 +61,35 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
       setGenerating(true);
       setLoadingMessage("Generating Quiz from PDF Content...");
       setError(null);
-      
-      console.log('Generating quiz for fileId:', file.id);
-      
-      const response = await fetch('/api/create-quiz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      console.log("Generating quiz for fileId:", file.id);
+
+      const response = await fetch("/api/create-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId: file.id }),
       });
 
-      console.log('Quiz generation response status:', response.status);
+      console.log("Quiz generation response status:", response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Quiz generated successfully:', data);
-        
+        console.log("Quiz generated successfully:", data);
+
         // Refresh the quiz data after generation
         setQuiz(data.quiz);
         setLoadingMessage("Quiz Generated Successfully!");
         setTimeout(() => setLoadingMessage(""), 2000);
       } else {
         const errorData = await response.json();
-        console.error('Failed to generate quiz:', errorData);
-        setError(`Failed to generate quiz: ${errorData.error || 'Unknown error'}`);
+        console.error("Failed to generate quiz:", errorData);
+        setError(
+          `Failed to generate quiz: ${errorData.error || "Unknown error"}`,
+        );
       }
     } catch (error) {
-      console.error('Error generating quiz:', error);
-      setError('Failed to generate quiz. Please try again.');
+      console.error("Error generating quiz:", error);
+      setError("Failed to generate quiz. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -94,18 +100,20 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
       setLoading(true);
       setLoadingMessage("Refreshing Quiz...");
       setError(null);
-      
+
       const quizData = await getQuiz(file.id);
 
       if (quizData.error) {
         setQuiz(null);
-        setError("No quiz found. Click 'Generate Quiz' to create one from your PDF content.");
+        setError(
+          "No quiz found. Click 'Generate Quiz' to create one from your PDF content.",
+        );
       } else {
         setQuiz(quizData.quiz);
       }
     } catch (err: any) {
-      console.error('Error refreshing quiz:', err);
-      setError(err.message || 'Failed to refresh quiz');
+      console.error("Error refreshing quiz:", err);
+      setError(err.message || "Failed to refresh quiz");
     } finally {
       setLoading(false);
     }
@@ -113,7 +121,6 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
 
   return (
     <div className="flex h-[calc(100vh-3.5rem)]">
-      
       <PDFSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
@@ -123,12 +130,14 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
         setLoading={setLoading}
         setLoadingMessage={setLoadingMessage}
       />
-      
+
       {/* Main content */}
-      <div className={`flex-1 flex flex-col ${sidebarOpen ? 'ml-64' : 'ml-16'} transition-all duration-300`}>
+      <div
+        className={`flex-1 flex flex-col ${sidebarOpen ? "ml-64" : "ml-16"} transition-all duration-300`}
+      >
         {/* Quick Navigation Tabs */}
         <QuickNavTabs fileId={file.id} currentPage="quiz" />
-        
+
         <div className="flex-1 px-4 py-6 sm:px-6 lg:pl-8 xl:pl-6 overflow-y-auto">
           <div className="max-w-4xl mx-auto">
             {/* Header */}
@@ -139,10 +148,12 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
                 </div>
                 <div>
                   <h1 className="text-3xl font-bold text-gray-900">Quiz</h1>
-                  <p className="text-gray-600">Test your knowledge with questions based on your PDF content</p>
+                  <p className="text-gray-600">
+                    Test your knowledge with questions based on your PDF content
+                  </p>
                 </div>
               </div>
-              
+
               {/* Action Buttons */}
               <div className="flex items-center space-x-3">
                 <Button
@@ -155,7 +166,7 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
                   <RefreshCw className="w-4 h-4" />
                   Refresh
                 </Button>
-                
+
                 {!quiz && (
                   <Button
                     onClick={generateQuiz}
@@ -167,7 +178,7 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
                     ) : (
                       <BookOpen className="w-4 h-4" />
                     )}
-                    {generating ? 'Generating...' : 'Generate Quiz'}
+                    {generating ? "Generating..." : "Generate Quiz"}
                   </Button>
                 )}
               </div>
@@ -178,14 +189,18 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
               <div className="flex items-center justify-center py-12">
                 <div className="text-center">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
-                  <p className="text-gray-600">{loadingMessage || "Loading quiz..."}</p>
+                  <p className="text-gray-600">
+                    {loadingMessage || "Loading quiz..."}
+                  </p>
                 </div>
               </div>
             ) : error ? (
               <div className="text-center py-12">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
                   <BookOpen className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-yellow-800 mb-2">No Quiz Available</h3>
+                  <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+                    No Quiz Available
+                  </h3>
                   <p className="text-yellow-700 mb-4">{error}</p>
                   <Button
                     onClick={generateQuiz}
@@ -208,7 +223,7 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
               </div>
             ) : quiz ? (
               <div className="bg-white rounded-xl shadow-lg">
-          <QuizPanel quiz={quiz} />
+                <QuizPanel quiz={quiz} />
               </div>
             ) : (
               <div className="text-center py-12">
@@ -224,11 +239,15 @@ export default function QuizPageWithSidebar({ file }: QuizPageWithSidebarProps) 
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 flex flex-col items-center space-y-4 shadow-xl">
             <Loader2 className="h-8 w-8 text-green-600 animate-spin" />
-            <p className="text-lg font-medium text-gray-900">{loadingMessage || "Loading..."}</p>
-            <p className="text-sm text-gray-600">Please wait while we process your request</p>
+            <p className="text-lg font-medium text-gray-900">
+              {loadingMessage || "Loading..."}
+            </p>
+            <p className="text-sm text-gray-600">
+              Please wait while we process your request
+            </p>
           </div>
         </div>
       )}
     </div>
   );
-} 
+}

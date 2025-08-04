@@ -11,13 +11,13 @@ export default function TestAudioPage() {
   const testAudioAPI = async () => {
     setLoading(true);
     try {
-      const response = await fetch('/api/test-audio');
+      const response = await fetch("/api/test-audio");
       const result = await response.json();
       setTestResult(result);
-      console.log('Test audio result:', result);
+      console.log("Test audio result:", result);
     } catch (error) {
-      console.error('Test audio error:', error);
-      setTestResult({ error: 'Failed to test audio API' });
+      console.error("Test audio error:", error);
+      setTestResult({ error: "Failed to test audio API" });
     } finally {
       setLoading(false);
     }
@@ -28,18 +28,20 @@ export default function TestAudioPage() {
     try {
       const response = await fetch(`/api/audio/${filename}`);
       if (response.ok) {
-        setTestResult({ 
-          success: true, 
+        setTestResult({
+          success: true,
           message: `Audio file ${filename} is accessible`,
-          size: response.headers.get('Content-Length'),
-          type: response.headers.get('Content-Type')
+          size: response.headers.get("Content-Length"),
+          type: response.headers.get("Content-Type"),
         });
       } else {
         const error = await response.json();
-        setTestResult({ error: `Failed to access ${filename}: ${error.error}` });
+        setTestResult({
+          error: `Failed to access ${filename}: ${error.error}`,
+        });
       }
     } catch (error) {
-      console.error('Test specific audio error:', error);
+      console.error("Test specific audio error:", error);
       setTestResult({ error: `Failed to test ${filename}` });
     } finally {
       setLoading(false);
@@ -49,21 +51,17 @@ export default function TestAudioPage() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="text-3xl font-bold mb-6">Audio API Test Page</h1>
-      
+
       <div className="space-y-6">
         <Card>
           <CardHeader>
             <CardTitle>Test Audio Directory</CardTitle>
           </CardHeader>
           <CardContent>
-            <Button 
-              onClick={testAudioAPI} 
-              disabled={loading}
-              className="mb-4"
-            >
-              {loading ? 'Testing...' : 'Test Audio Directory'}
+            <Button onClick={testAudioAPI} disabled={loading} className="mb-4">
+              {loading ? "Testing..." : "Test Audio Directory"}
             </Button>
-            
+
             {testResult && (
               <div className="mt-4 p-4 bg-gray-100 rounded-lg">
                 <h3 className="font-semibold mb-2">Test Result:</h3>
@@ -101,4 +99,4 @@ export default function TestAudioPage() {
       </div>
     </div>
   );
-} 
+}

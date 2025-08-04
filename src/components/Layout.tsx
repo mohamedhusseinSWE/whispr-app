@@ -1,5 +1,3 @@
-
-
 // components/Layout.tsx
 "use client";
 
@@ -26,7 +24,8 @@ const pdfToolsLinks = [
 export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
 
-  const isPdfPage = pathname.startsWith("/dashboard/") && pathname.split("/").length === 3;
+  const isPdfPage =
+    pathname.startsWith("/dashboard/") && pathname.split("/").length === 3;
   const links = isPdfPage ? pdfToolsLinks : dashboardLinks;
 
   return (

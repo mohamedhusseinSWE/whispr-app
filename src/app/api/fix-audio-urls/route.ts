@@ -16,7 +16,7 @@ export async function POST(request: NextRequest) {
     if (!fileId) {
       return NextResponse.json(
         { error: "File ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     console.log("Sections to fix:", podcast.sections.length);
 
     // Get all audio files on the server
-    const uploadsDir = join(process.cwd(), 'public', 'uploads', 'audio');
+    const uploadsDir = join(process.cwd(), "public", "uploads", "audio");
     const files = await readdir(uploadsDir);
     console.log("Available files:", files);
 
@@ -47,24 +47,29 @@ export async function POST(request: NextRequest) {
     const updatedSections = await Promise.all(
       podcast.sections.map(async (section, index) => {
         try {
-          console.log(`[${index + 1}/${podcast.sections.length}] Fixing section: ${section.title}`);
-          
-          // Find the matching file for this section
-          const sectionFiles = files.filter(file => 
-            file.includes(podcast.id) && 
-            file.includes(section.id) &&
-            (file.includes('.wav') || file.includes('.mp3'))
+          console.log(
+            `[${index + 1}/${podcast.sections.length}] Fixing section: ${section.title}`,
           );
-          
+
+          // Find the matching file for this section
+          const sectionFiles = files.filter(
+            (file) =>
+              file.includes(podcast.id) &&
+              file.includes(section.id) &&
+              (file.includes(".wav") || file.includes(".mp3")),
+          );
+
           console.log(`Found files for section ${section.id}:`, sectionFiles);
-          
+
           if (sectionFiles.length > 0) {
             // Use the first matching file
             const correctFilename = sectionFiles[0];
             const correctAudioUrl = `/api/audio/${correctFilename}`;
-            
-            console.log(`✅ Updating section ${section.id} to use: ${correctAudioUrl}`);
-            
+
+            console.log(
+              `✅ Updating section ${section.id} to use: ${correctAudioUrl}`,
+            );
+
             // Update section with correct audio URL
             await db.podcastSection.update({
               where: { id: section.id },
@@ -89,11 +94,13 @@ export async function POST(request: NextRequest) {
             audioUrl: null,
           };
         }
-      })
+      }),
     );
 
-    const sectionsWithAudio = updatedSections.filter(s => s.audioUrl);
-    console.log(`✅ URL fixing complete! ${sectionsWithAudio.length}/${podcast.sections.length} sections have audio`);
+    const sectionsWithAudio = updatedSections.filter((s) => s.audioUrl);
+    console.log(
+      `✅ URL fixing complete! ${sectionsWithAudio.length}/${podcast.sections.length} sections have audio`,
+    );
 
     return NextResponse.json({
       success: true,
@@ -103,12 +110,14 @@ export async function POST(request: NextRequest) {
         sections: updatedSections,
       },
     });
-
   } catch (error) {
     console.error("URL fixing error:", error);
     return NextResponse.json(
-      { error: "Failed to fix audio URLs", details: error instanceof Error ? error.message : "Unknown error" },
-      { status: 500 }
+      {
+        error: "Failed to fix audio URLs",
+        details: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 },
     );
   }
 }

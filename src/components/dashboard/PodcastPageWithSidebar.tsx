@@ -33,7 +33,10 @@ interface PodcastPageWithSidebarProps {
   podcast?: Podcast;
 }
 
-export default function PodcastPageWithSidebar({ file, podcast }: PodcastPageWithSidebarProps) {
+export default function PodcastPageWithSidebar({
+  file,
+  podcast,
+}: PodcastPageWithSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("podcast");
   const [loading, setLoading] = useState(false);
@@ -51,14 +54,14 @@ export default function PodcastPageWithSidebar({ file, podcast }: PodcastPageWit
         setLoading={setLoading}
         setLoadingMessage={setLoadingMessage}
       />
-      
+
       {/* Main content area - Full width */}
       <div className="flex-1 flex flex-col ml-64">
         {/* Quick Navigation Tabs */}
         <div className="w-full border-b border-gray-200">
           <QuickNavTabs fileId={file.id} currentPage="podcast" />
         </div>
-        
+
         {/* Content area */}
         <div className="flex-1">
           <PodcastPanel fileId={file.id} initialPodcast={podcast} />
@@ -70,8 +73,12 @@ export default function PodcastPageWithSidebar({ file, podcast }: PodcastPageWit
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 flex flex-col items-center space-y-4 shadow-xl">
             <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
-            <p className="text-lg font-medium text-gray-900">{loadingMessage || "Loading..."}</p>
-            <p className="text-sm text-gray-600">Please wait while we process your request</p>
+            <p className="text-lg font-medium text-gray-900">
+              {loadingMessage || "Loading..."}
+            </p>
+            <p className="text-sm text-gray-600">
+              Please wait while we process your request
+            </p>
           </div>
         </div>
       )}

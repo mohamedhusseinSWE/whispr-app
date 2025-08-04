@@ -135,22 +135,25 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
     { id: "flashcards", icon: CreditCard, label: "Flashcards" },
     { id: "quiz", icon: Brain, label: "Quiz" },
     { id: "transcript", icon: FileAudio, label: "Transcript" },
-   
   ];
 
   const handleNav = async (itemId: string) => {
     console.log("Navigation clicked:", itemId);
     setActiveView(itemId);
-    
+
     // For generation pages, trigger the unified generation in background and navigate
-    if (itemId === "quiz" || itemId === "flashcards" || itemId === "transcript") {
+    if (
+      itemId === "quiz" ||
+      itemId === "flashcards" ||
+      itemId === "transcript"
+    ) {
       setLoading(true);
       setLoadingMessage?.("Generating Content...");
       setError(null);
-      
+
       // Navigate immediately to the page
       router.push(`/dashboard/${fileId}/${itemId}`);
-      
+
       // Generate all content in background using unified API
       try {
         const response = await fetch("/api/create-all-content", {
@@ -161,12 +164,14 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          console.error('API Error Response:', errorData);
-          throw new Error(`Failed to create content: ${response.status} - ${errorData.error || 'Unknown error'}`);
+          console.error("API Error Response:", errorData);
+          throw new Error(
+            `Failed to create content: ${response.status} - ${errorData.error || "Unknown error"}`,
+          );
         }
 
         const data = await response.json();
-        console.log('Content generated successfully:', data.message);
+        console.log("Content generated successfully:", data.message);
       } catch (err: any) {
         console.error("Error creating content:", err);
         setError(err.message || "An unexpected error occurred.");
@@ -177,10 +182,10 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
       setLoading(true);
       setLoadingMessage?.("Generating Podcast...");
       setError(null);
-      
+
       // Navigate immediately to podcast page
       router.push(`/dashboard/${fileId}/podcast`);
-      
+
       // Generate podcast in background
       try {
         const response = await fetch("/api/create-podcast", {
@@ -191,8 +196,10 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
 
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({}));
-          console.error('API Error Response:', errorData);
-          throw new Error(`Failed to create podcast: ${response.status} - ${errorData.error || 'Unknown error'}`);
+          console.error("API Error Response:", errorData);
+          throw new Error(
+            `Failed to create podcast: ${response.status} - ${errorData.error || "Unknown error"}`,
+          );
         }
       } catch (err: any) {
         console.error("Error creating podcast:", err);
@@ -287,12 +294,12 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
             <div className="flex items-center space-x-3">
               <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
                 <span className="text-white text-sm font-medium">
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  {user?.name?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {user?.name || 'User'}
+                  {user?.name || "User"}
                 </p>
               </div>
             </div>
@@ -300,7 +307,7 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
             <div className="flex justify-center">
               <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
                 <span className="text-white text-sm font-medium">
-                  {user?.name?.charAt(0).toUpperCase() || 'U'}
+                  {user?.name?.charAt(0).toUpperCase() || "U"}
                 </span>
               </div>
             </div>

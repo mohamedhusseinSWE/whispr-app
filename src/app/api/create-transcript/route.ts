@@ -9,22 +9,25 @@ const openai = new OpenAI({
 export async function POST(req: NextRequest) {
   try {
     const { fileId } = await req.json();
-    console.log('Create transcript API called with fileId:', fileId);
+    console.log("Create transcript API called with fileId:", fileId);
 
     // Fetch PDF content (chunks)
     const chunks = await db.chunk.findMany({
       where: { fileId },
       take: 30, // Get more chunks for comprehensive transcript
-      orderBy: { createdAt: 'asc' }, // Ensure we get content in order
+      orderBy: { createdAt: "asc" }, // Ensure we get content in order
     });
 
     if (!chunks.length) {
-      return NextResponse.json({ error: "No PDF content found for this file." }, { status: 400 });
+      return NextResponse.json(
+        { error: "No PDF content found for this file." },
+        { status: 400 },
+      );
     }
 
     const pdfContent = chunks.map((c) => c.text).join("\n\n");
-    console.log('PDF content length:', pdfContent.length);
-    console.log('PDF content preview:', pdfContent.substring(0, 500));
+    console.log("PDF content length:", pdfContent.length);
+    console.log("PDF content preview:", pdfContent.substring(0, 500));
 
     // Enhanced prompt for better transcript generation
     const prompt = `
@@ -63,7 +66,8 @@ Create a well-structured transcript now:`;
           messages: [
             {
               role: "system",
-              content: "You are a professional transcript creator. You must preserve ALL information from the provided content while improving formatting and readability. Never add or remove important facts. If you cannot create a proper transcript from the content, respond with 'Unable to generate transcript from provided content.'",
+              content:
+                "You are a professional transcript creator. You must preserve ALL information from the provided content while improving formatting and readability. Never add or remove important facts. If you cannot create a proper transcript from the content, respond with 'Unable to generate transcript from provided content.'",
             },
             {
               role: "user",
@@ -73,23 +77,25 @@ Create a well-structured transcript now:`;
         });
 
         transcriptText = response.choices[0]?.message?.content?.trim();
-        console.log('Transcript generated successfully');
+        console.log("Transcript generated successfully");
 
         if (!transcriptText) {
           throw new Error("Empty response from LLM");
         }
 
         // Check if the response indicates failure
-        if (transcriptText.toLowerCase().includes('unable to generate') || transcriptText.toLowerCase().includes('cannot create')) {
+        if (
+          transcriptText.toLowerCase().includes("unable to generate") ||
+          transcriptText.toLowerCase().includes("cannot create")
+        ) {
           throw new Error("LLM indicated it cannot generate transcript");
         }
 
         break;
-
       } catch (error) {
         console.error(`Error in attempt ${attempts}:`, error);
         if (attempts < maxAttempts) {
-          await new Promise(resolve => setTimeout(resolve, 2000)); // Increased delay
+          await new Promise((resolve) => setTimeout(resolve, 2000)); // Increased delay
         }
       }
     }
@@ -97,9 +103,13 @@ Create a well-structured transcript now:`;
     // If AI fails completely, return error instead of static content
     if (!transcriptText) {
       console.log("AI generation failed completely after all attempts");
-      return NextResponse.json({ 
-        error: "Failed to generate transcript from PDF content. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate transcript from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Save transcript to DB
@@ -112,14 +122,14 @@ Create a well-structured transcript now:`;
         },
       });
 
-      console.log('Transcript saved to database successfully');
+      console.log("Transcript saved to database successfully");
       return NextResponse.json({ transcript });
     } catch (dbError: unknown) {
-      console.error('Database error:', dbError);
+      console.error("Database error:", dbError);
       // Return the generated transcript even if DB save fails
-      console.log('Database save failed, returning generated transcript');
+      console.log("Database save failed, returning generated transcript");
       const transcript = {
-        id: 'generated-transcript-id',
+        id: "generated-transcript-id",
         fileId,
         title: "Generated Transcript",
         content: transcriptText,
@@ -129,6 +139,9 @@ Create a well-structured transcript now:`;
     }
   } catch (error) {
     console.error("API error:", error);
-    return NextResponse.json({ error: "Failed to create transcript" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create transcript" },
+      { status: 500 },
+    );
   }
-} 
+}

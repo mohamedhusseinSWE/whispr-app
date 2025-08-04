@@ -36,7 +36,7 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
       setFileId(resolvedParams.fileId);
       await fetchTranscriptAndFile(resolvedParams.fileId);
     };
-    
+
     resolveParams();
   }, [params]);
 
@@ -44,11 +44,11 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Use Server Actions to fetch data
       const [transcriptData, fileData] = await Promise.all([
         getTranscript(id),
-        getFileData(id)
+        getFileData(id),
       ]);
 
       if (transcriptData.error) {
@@ -57,7 +57,7 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
       } else {
         setTranscript(transcriptData.transcript);
       }
-      
+
       if (!fileData.file) {
         setError("File not found");
         setFile(null);
@@ -76,10 +76,10 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
     try {
       setGenerating(true);
       setError(null);
-      
-      const response = await fetch('/api/create-transcript', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      const response = await fetch("/api/create-transcript", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId }),
       });
 
@@ -88,11 +88,13 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
         setTranscript(data.transcript);
       } else {
         const errorData = await response.json();
-        setError(`Failed to generate transcript: ${errorData.error || 'Unknown error'}`);
+        setError(
+          `Failed to generate transcript: ${errorData.error || "Unknown error"}`,
+        );
       }
     } catch (error) {
-      console.error('Error generating transcript:', error);
-      setError('Failed to generate transcript. Please try again.');
+      console.error("Error generating transcript:", error);
+      setError("Failed to generate transcript. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -126,8 +128,8 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
         <div className="text-center">
           <BookOpen className="w-8 h-8 mx-auto mb-4 text-red-400" />
           <p className="text-red-600 mb-4">{error}</p>
-          <Button 
-            onClick={() => fetchTranscriptAndFile(fileId)} 
+          <Button
+            onClick={() => fetchTranscriptAndFile(fileId)}
             className="flex items-center gap-2"
           >
             <BookOpen className="w-4 h-4" />
@@ -143,9 +145,11 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <BookOpen className="w-8 h-8 mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600 mb-4">No transcript found for this file.</p>
-          <Button 
-            onClick={generateTranscript} 
+          <p className="text-gray-600 mb-4">
+            No transcript found for this file.
+          </p>
+          <Button
+            onClick={generateTranscript}
             disabled={generating}
             className="flex items-center gap-2"
           >
@@ -166,7 +170,5 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
     );
   }
 
-  return (
-    <TranscriptPageWithSidebar file={file} />
-  );
+  return <TranscriptPageWithSidebar file={file} />;
 }

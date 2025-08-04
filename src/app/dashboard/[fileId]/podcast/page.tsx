@@ -43,7 +43,7 @@ export default function PodcastPage({ params }: PodcastPageProps) {
       setFileId(resolvedParams.fileId);
       await fetchFileAndPodcastData(resolvedParams.fileId);
     };
-    
+
     resolveParams();
   }, [params]);
 
@@ -51,18 +51,18 @@ export default function PodcastPage({ params }: PodcastPageProps) {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Fetch file data
       const fileData = await getFileData(id);
-      console.log('File data fetched:', fileData);
+      console.log("File data fetched:", fileData);
       setFile(fileData.file as FileType);
 
       // Check if podcast exists using server action
       const podcastData = await getPodcast(id);
-      console.log('Podcast data fetched:', podcastData);
-      
+      console.log("Podcast data fetched:", podcastData);
+
       if (podcastData.error) {
-        console.log('No existing podcast found:', podcastData.error);
+        console.log("No existing podcast found:", podcastData.error);
         setPodcast(null);
       } else {
         setPodcast(podcastData.podcast as PodcastType);
@@ -79,31 +79,31 @@ export default function PodcastPage({ params }: PodcastPageProps) {
     try {
       setGenerating(true);
       setError(null);
-      
-      console.log('Generating podcast for fileId:', fileId);
-      
+
+      console.log("Generating podcast for fileId:", fileId);
+
       // Use API route to create podcast
-      const response = await fetch('/api/create-podcast', {
-        method: 'POST',
+      const response = await fetch("/api/create-podcast", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ fileId }),
       });
 
       const result = await response.json();
-      console.log('Podcast generation result:', result);
+      console.log("Podcast generation result:", result);
 
       if (!response.ok) {
-        console.error('Failed to generate podcast:', result.error);
+        console.error("Failed to generate podcast:", result.error);
         setError(`Failed to generate podcast: ${result.error}`);
       } else {
-        console.log('Podcast generated successfully:', result.podcast);
+        console.log("Podcast generated successfully:", result.podcast);
         setPodcast(result.podcast as PodcastType);
       }
     } catch (error) {
-      console.error('Error generating podcast:', error);
-      setError('Failed to generate podcast. Please try again.');
+      console.error("Error generating podcast:", error);
+      setError("Failed to generate podcast. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -137,8 +137,8 @@ export default function PodcastPage({ params }: PodcastPageProps) {
         <div className="text-center">
           <Headphones className="w-8 h-8 mx-auto mb-4 text-red-400" />
           <p className="text-red-600 mb-4">{error}</p>
-          <Button 
-            onClick={() => fetchFileAndPodcastData(fileId)} 
+          <Button
+            onClick={() => fetchFileAndPodcastData(fileId)}
             className="flex items-center gap-2"
           >
             <Headphones className="w-4 h-4" />
@@ -155,8 +155,8 @@ export default function PodcastPage({ params }: PodcastPageProps) {
         <div className="text-center">
           <Headphones className="w-8 h-8 mx-auto mb-4 text-gray-400" />
           <p className="text-gray-600 mb-4">No podcast available</p>
-          <Button 
-            onClick={generatePodcast} 
+          <Button
+            onClick={generatePodcast}
             disabled={generating}
             className="flex items-center gap-2"
           >
@@ -178,9 +178,12 @@ export default function PodcastPage({ params }: PodcastPageProps) {
   }
 
   // Debug: Log the data being passed to the component
-  console.log('Rendering PodcastPageWithSidebar with file:', file, 'and podcast:', podcast);
-
-  return (
-    <PodcastPageWithSidebar file={file} podcast={podcast} />
+  console.log(
+    "Rendering PodcastPageWithSidebar with file:",
+    file,
+    "and podcast:",
+    podcast,
   );
+
+  return <PodcastPageWithSidebar file={file} podcast={podcast} />;
 }

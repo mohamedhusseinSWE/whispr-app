@@ -41,7 +41,7 @@ export default function QuizPage({ params }: QuizPageProps) {
       setFileId(resolvedParams.fileId);
       await fetchQuizAndFile(resolvedParams.fileId);
     };
-    
+
     resolveParams();
   }, [params]);
 
@@ -49,15 +49,15 @@ export default function QuizPage({ params }: QuizPageProps) {
     try {
       setLoading(true);
       setError(null);
-      
+
       // Use Server Actions to fetch data
       const [quizData, fileData] = await Promise.all([
         getQuiz(id),
-        getFileData(id)
+        getFileData(id),
       ]);
 
-      console.log('Quiz data fetched:', quizData);
-      console.log('File data fetched:', fileData);
+      console.log("Quiz data fetched:", quizData);
+      console.log("File data fetched:", fileData);
 
       if (quizData.error) {
         setError(quizData.error);
@@ -65,7 +65,7 @@ export default function QuizPage({ params }: QuizPageProps) {
       } else {
         setQuiz(quizData.quiz);
       }
-      
+
       if (!fileData.file) {
         setError("File not found");
         setFile(null);
@@ -84,31 +84,33 @@ export default function QuizPage({ params }: QuizPageProps) {
     try {
       setGenerating(true);
       setError(null);
-      
-      console.log('Generating quiz for fileId:', fileId);
-      
-      const response = await fetch('/api/create-quiz', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      console.log("Generating quiz for fileId:", fileId);
+
+      const response = await fetch("/api/create-quiz", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId }),
       });
 
-      console.log('Quiz generation response status:', response.status);
+      console.log("Quiz generation response status:", response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Quiz generated successfully:', data);
-        
+        console.log("Quiz generated successfully:", data);
+
         // Refresh the quiz data after generation
         await fetchQuizAndFile(fileId);
       } else {
         const errorData = await response.json();
-        console.error('Failed to generate quiz:', errorData);
-        setError(`Failed to generate quiz: ${errorData.error || 'Unknown error'}`);
+        console.error("Failed to generate quiz:", errorData);
+        setError(
+          `Failed to generate quiz: ${errorData.error || "Unknown error"}`,
+        );
       }
     } catch (error) {
-      console.error('Error generating quiz:', error);
-      setError('Failed to generate quiz. Please try again.');
+      console.error("Error generating quiz:", error);
+      setError("Failed to generate quiz. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -142,8 +144,8 @@ export default function QuizPage({ params }: QuizPageProps) {
         <div className="text-center">
           <BookOpen className="w-8 h-8 mx-auto mb-4 text-red-400" />
           <p className="text-red-600 mb-4">{error}</p>
-          <Button 
-            onClick={() => fetchQuizAndFile(fileId)} 
+          <Button
+            onClick={() => fetchQuizAndFile(fileId)}
             className="flex items-center gap-2"
           >
             <BookOpen className="w-4 h-4" />
@@ -160,8 +162,8 @@ export default function QuizPage({ params }: QuizPageProps) {
         <div className="text-center">
           <BookOpen className="w-8 h-8 mx-auto mb-4 text-gray-400" />
           <p className="text-gray-600 mb-4">No quiz found for this file.</p>
-          <Button 
-            onClick={generateQuiz} 
+          <Button
+            onClick={generateQuiz}
             disabled={generating}
             className="flex items-center gap-2"
           >
@@ -183,9 +185,7 @@ export default function QuizPage({ params }: QuizPageProps) {
   }
 
   // Debug: Log the quiz data being passed to the component
-  console.log('Rendering QuizPageWithSidebar with quiz:', quiz);
+  console.log("Rendering QuizPageWithSidebar with quiz:", quiz);
 
-  return (
-    <QuizPageWithSidebar file={file} quiz={quiz} />
-  );
+  return <QuizPageWithSidebar file={file} quiz={quiz} />;
 }

@@ -3,7 +3,16 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Progress } from "../ui/progress";
-import { VolumeX, Play, Pause, SkipBack, SkipForward, AlertCircle, RefreshCw, Volume1 } from "lucide-react";
+import {
+  VolumeX,
+  Play,
+  Pause,
+  SkipBack,
+  SkipForward,
+  AlertCircle,
+  RefreshCw,
+  Volume1,
+} from "lucide-react";
 
 interface BrowserSpeechPlayerProps {
   text: string;
@@ -35,7 +44,7 @@ export default function BrowserSpeechPlayer({
 
   useEffect(() => {
     // Check if speech synthesis is supported
-    if ('speechSynthesis' in window) {
+    if ("speechSynthesis" in window) {
       setSpeechSupported(true);
       console.log("✅ Browser speech synthesis supported");
     } else {
@@ -109,7 +118,6 @@ export default function BrowserSpeechPlayer({
 
       // Start progress tracking
       startProgressTracking();
-
     } catch (error) {
       console.error("Error starting speech:", error);
       setError("Failed to start speech synthesis");
@@ -118,14 +126,17 @@ export default function BrowserSpeechPlayer({
 
   const startProgressTracking = () => {
     // Estimate duration based on text length (rough estimate: 150 words per minute)
-    const words = text.split(' ').length;
+    const words = text.split(" ").length;
     const estimatedDuration = (words / 150) * 60; // seconds
     setDuration(estimatedDuration);
 
     // Update progress every 100ms
     intervalRef.current = setInterval(() => {
       if (speechRef.current && isPlaying) {
-        const elapsed = (Date.now() - (speechRef.current as SpeechSynthesisUtterance).startTime) / 1000;
+        const elapsed =
+          (Date.now() -
+            (speechRef.current as SpeechSynthesisUtterance).startTime) /
+          1000;
         const newTime = Math.min(elapsed, estimatedDuration);
         setCurrentTime(newTime);
         onTimeUpdate?.(newTime, estimatedDuration);
@@ -188,7 +199,7 @@ export default function BrowserSpeechPlayer({
   const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+    return `${mins}:${secs.toString().padStart(2, "0")}`;
   };
 
   const retryLoad = () => {
@@ -214,7 +225,7 @@ export default function BrowserSpeechPlayer({
           <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
           <p className="text-red-600 mb-2 font-medium">Speech Error</p>
           <p className="text-gray-500 text-sm mb-4">{error}</p>
-          <Button 
+          <Button
             onClick={retryLoad}
             variant="outline"
             size="sm"
@@ -236,31 +247,21 @@ export default function BrowserSpeechPlayer({
           <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-purple-600 mx-auto mb-2"></div>
           <p className="text-gray-500 text-xs mb-4">Preparing speech...</p>
         </div>
-        
+
         {/* Show basic controls even while loading */}
         <div className="flex items-center justify-center space-x-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled
-            className="text-gray-400"
-          >
+          <Button variant="ghost" size="sm" disabled className="text-gray-400">
             <SkipBack className="w-5 h-5" />
           </Button>
-          
+
           <Button
             disabled
             className="w-12 h-12 rounded-full bg-gray-400 text-white"
           >
             <Play className="w-6 h-6 ml-1" />
           </Button>
-          
-          <Button
-            variant="ghost"
-            size="sm"
-            disabled
-            className="text-gray-400"
-          >
+
+          <Button variant="ghost" size="sm" disabled className="text-gray-400">
             <SkipForward className="w-5 h-5" />
           </Button>
         </div>
@@ -276,10 +277,7 @@ export default function BrowserSpeechPlayer({
           <span>{formatTime(currentTime)}</span>
           <span>{formatTime(duration)}</span>
         </div>
-        <Progress 
-          value={(currentTime / duration) * 100} 
-          className="h-2"
-        />
+        <Progress value={(currentTime / duration) * 100} className="h-2" />
         <p className="text-xs text-gray-400 mt-1 text-center">
           Note: Seeking and skipping not available in speech synthesis
         </p>
@@ -296,7 +294,7 @@ export default function BrowserSpeechPlayer({
         >
           <SkipBack className="w-5 h-5" />
         </Button>
-        
+
         <Button
           onClick={togglePlayPause}
           className="w-12 h-12 rounded-full bg-purple-600 hover:bg-purple-700 text-white"
@@ -307,7 +305,7 @@ export default function BrowserSpeechPlayer({
             <Play className="w-6 h-6 ml-1" />
           )}
         </Button>
-        
+
         <Button
           variant="ghost"
           size="sm"
@@ -333,8 +331,8 @@ export default function BrowserSpeechPlayer({
             <Volume1 className="w-4 h-4" />
           )}
         </Button>
-        <Progress 
-          value={isMuted ? 0 : volume * 100} 
+        <Progress
+          value={isMuted ? 0 : volume * 100}
           className="flex-1 h-1 cursor-pointer"
           onClick={(e) => {
             const rect = e.currentTarget.getBoundingClientRect();
@@ -352,4 +350,4 @@ export default function BrowserSpeechPlayer({
       </div>
     </div>
   );
-} 
+}

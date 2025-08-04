@@ -10,34 +10,41 @@ const openai = new OpenAI({
 export async function POST(req: NextRequest) {
   try {
     const { fileId } = await req.json();
-    console.log('Create all content API called with fileId:', fileId);
+    console.log("Create all content API called with fileId:", fileId);
 
     // Fetch PDF content (chunks)
     const chunks = await db.chunk.findMany({
       where: { fileId },
       take: 30, // Get more chunks for comprehensive content
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
 
     if (!chunks.length) {
-      return NextResponse.json({ error: "No PDF content found for this file." }, { status: 400 });
+      return NextResponse.json(
+        { error: "No PDF content found for this file." },
+        { status: 400 },
+      );
     }
 
     const pdfContent = chunks.map((c) => c.text).join("\n\n");
-    console.log('PDF content length:', pdfContent.length);
+    console.log("PDF content length:", pdfContent.length);
 
     // Check if content already exists
     const existingQuiz = await db.quiz.findFirst({ where: { fileId } });
-    const existingFlashcards = await db.flashcards.findFirst({ where: { fileId } });
-    const existingTranscript = await db.transcript.findFirst({ where: { fileId } });
+    const existingFlashcards = await db.flashcards.findFirst({
+      where: { fileId },
+    });
+    const existingTranscript = await db.transcript.findFirst({
+      where: { fileId },
+    });
 
     if (existingQuiz && existingFlashcards && existingTranscript) {
-      console.log('All content already exists, returning existing data');
+      console.log("All content already exists, returning existing data");
       return NextResponse.json({
         quiz: existingQuiz,
         flashcards: existingFlashcards,
         transcript: existingTranscript,
-        message: "Content already exists"
+        message: "Content already exists",
       });
     }
 
@@ -110,56 +117,60 @@ ${pdfContent}
 Create a well-structured transcript now:`;
 
     // Generate all content in parallel with enhanced retry logic
-    const [quizResponse, flashcardsResponse, transcriptResponse] = await Promise.all([
-      // Quiz generation
-      openai.chat.completions.create({
-        model: "deepseek/deepseek-r1:free",
-        temperature: 0.1,
-        max_tokens: 3000,
-        messages: [
-          {
-            role: "system",
-            content: "You are a professional quiz creator. You must create questions that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic questions. Always respond with valid JSON only. If you cannot create specific questions from the content, respond with an empty array [].",
-          },
-          {
-            role: "user",
-            content: quizPrompt,
-          },
-        ],
-      }),
-      // Flashcards generation
-      openai.chat.completions.create({
-        model: "deepseek/deepseek-r1:free",
-        temperature: 0.1,
-        max_tokens: 3500,
-        messages: [
-          {
-            role: "system",
-            content: "You are a professional flashcard creator. You must create flashcards that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic flashcards. Always respond with valid JSON only. If you cannot create specific flashcards from the content, respond with an empty array [].",
-          },
-          {
-            role: "user",
-            content: flashcardsPrompt,
-          },
-        ],
-      }),
-      // Transcript generation
-      openai.chat.completions.create({
-        model: "deepseek/deepseek-r1:free",
-        temperature: 0.1,
-        max_tokens: 4000,
-        messages: [
-          {
-            role: "system",
-            content: "You are a professional transcript creator. You must preserve ALL information from the provided content while improving formatting and readability. Never add or remove important facts. If you cannot create a proper transcript from the content, respond with 'Unable to generate transcript from provided content.'",
-          },
-          {
-            role: "user",
-            content: transcriptPrompt,
-          },
-        ],
-      }),
-    ]);
+    const [quizResponse, flashcardsResponse, transcriptResponse] =
+      await Promise.all([
+        // Quiz generation
+        openai.chat.completions.create({
+          model: "deepseek/deepseek-r1:free",
+          temperature: 0.1,
+          max_tokens: 3000,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a professional quiz creator. You must create questions that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic questions. Always respond with valid JSON only. If you cannot create specific questions from the content, respond with an empty array [].",
+            },
+            {
+              role: "user",
+              content: quizPrompt,
+            },
+          ],
+        }),
+        // Flashcards generation
+        openai.chat.completions.create({
+          model: "deepseek/deepseek-r1:free",
+          temperature: 0.1,
+          max_tokens: 3500,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a professional flashcard creator. You must create flashcards that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic flashcards. Always respond with valid JSON only. If you cannot create specific flashcards from the content, respond with an empty array [].",
+            },
+            {
+              role: "user",
+              content: flashcardsPrompt,
+            },
+          ],
+        }),
+        // Transcript generation
+        openai.chat.completions.create({
+          model: "deepseek/deepseek-r1:free",
+          temperature: 0.1,
+          max_tokens: 4000,
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are a professional transcript creator. You must preserve ALL information from the provided content while improving formatting and readability. Never add or remove important facts. If you cannot create a proper transcript from the content, respond with 'Unable to generate transcript from provided content.'",
+            },
+            {
+              role: "user",
+              content: transcriptPrompt,
+            },
+          ],
+        }),
+      ]);
 
     // Add types for quiz and flashcards
     type QuizQuestion = {
@@ -174,7 +185,8 @@ Create a well-structured transcript now:`;
     };
 
     // Parse responses with enhanced error handling
-    let quizQuestions: QuizQuestion[] | undefined, flashcardCards: Flashcard[] | undefined;
+    let quizQuestions: QuizQuestion[] | undefined,
+      flashcardCards: Flashcard[] | undefined;
 
     // Parse quiz response
     try {
@@ -182,10 +194,10 @@ Create a well-structured transcript now:`;
       if (!quizRaw) {
         throw new Error("Empty quiz response");
       }
-      
+
       // Try multiple parsing strategies for quiz
       let parsedQuiz: unknown = null;
-      
+
       // Strategy 1: Direct JSON parse
       try {
         parsedQuiz = JSON.parse(quizRaw);
@@ -194,7 +206,9 @@ Create a well-structured transcript now:`;
         }
       } catch {
         // Strategy 2: Extract JSON from markdown code blocks
-        const codeBlockMatch = quizRaw.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/);
+        const codeBlockMatch = quizRaw.match(
+          /```(?:json)?\s*(\[[\s\S]*?\])\s*```/,
+        );
         if (codeBlockMatch) {
           try {
             parsedQuiz = JSON.parse(codeBlockMatch[1]);
@@ -217,27 +231,32 @@ Create a well-structured transcript now:`;
           }
         }
       }
-      
+
       if (!quizQuestions) {
         throw new Error("No valid quiz questions found");
       }
     } catch {
-      console.error('Error parsing quiz response:');
-      return NextResponse.json({ 
-        error: "Failed to generate quiz questions from PDF content. Please try again." 
-      }, { status: 500 });
+      console.error("Error parsing quiz response:");
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate quiz questions from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Parse flashcards response
     try {
-      const flashcardsRaw = flashcardsResponse.choices[0]?.message?.content?.trim();
+      const flashcardsRaw =
+        flashcardsResponse.choices[0]?.message?.content?.trim();
       if (!flashcardsRaw) {
         throw new Error("Empty flashcards response");
       }
-      
+
       // Try multiple parsing strategies for flashcards
       let parsedFlashcards: unknown = null;
-      
+
       // Strategy 1: Direct JSON parse
       try {
         parsedFlashcards = JSON.parse(flashcardsRaw);
@@ -246,11 +265,16 @@ Create a well-structured transcript now:`;
         }
       } catch {
         // Strategy 2: Extract JSON from markdown code blocks
-        const codeBlockMatch = flashcardsRaw.match(/```(?:json)?\s*(\[[\s\S]*?\])\s*```/);
+        const codeBlockMatch = flashcardsRaw.match(
+          /```(?:json)?\s*(\[[\s\S]*?\])\s*```/,
+        );
         if (codeBlockMatch) {
           try {
             parsedFlashcards = JSON.parse(codeBlockMatch[1]);
-            if (Array.isArray(parsedFlashcards) && parsedFlashcards.length > 0) {
+            if (
+              Array.isArray(parsedFlashcards) &&
+              parsedFlashcards.length > 0
+            ) {
               flashcardCards = parsedFlashcards as Flashcard[];
             }
           } catch {
@@ -259,7 +283,10 @@ Create a well-structured transcript now:`;
             if (arrayMatch) {
               try {
                 parsedFlashcards = JSON.parse(arrayMatch[0]);
-                if (Array.isArray(parsedFlashcards) && parsedFlashcards.length > 0) {
+                if (
+                  Array.isArray(parsedFlashcards) &&
+                  parsedFlashcards.length > 0
+                ) {
                   flashcardCards = parsedFlashcards as Flashcard[];
                 }
               } catch {
@@ -269,114 +296,147 @@ Create a well-structured transcript now:`;
           }
         }
       }
-      
+
       if (!flashcardCards) {
         throw new Error("No valid flashcards found");
       }
     } catch {
-      console.error('Error parsing flashcards response:');
-      return NextResponse.json({ 
-        error: "Failed to generate flashcards from PDF content. Please try again." 
-      }, { status: 500 });
+      console.error("Error parsing flashcards response:");
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate flashcards from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Parse transcript response
-    const transcriptContent = transcriptResponse.choices[0]?.message?.content?.trim();
+    const transcriptContent =
+      transcriptResponse.choices[0]?.message?.content?.trim();
     if (!transcriptContent) {
-      return NextResponse.json({ 
-        error: "Failed to generate transcript from PDF content. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate transcript from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Check if transcript response indicates failure
-    if (transcriptContent.toLowerCase().includes('unable to generate') || transcriptContent.toLowerCase().includes('cannot create')) {
-      return NextResponse.json({ 
-        error: "Failed to generate transcript from PDF content. Please try again." 
-      }, { status: 500 });
+    if (
+      transcriptContent.toLowerCase().includes("unable to generate") ||
+      transcriptContent.toLowerCase().includes("cannot create")
+    ) {
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate transcript from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Validate quiz questions
-    quizQuestions = quizQuestions.filter(q => 
-      q.question && 
-      Array.isArray(q.options) && 
-      q.options.length === 4 && 
-      q.answer && 
-      ['A', 'B', 'C', 'D'].includes(q.answer)
+    quizQuestions = quizQuestions.filter(
+      (q) =>
+        q.question &&
+        Array.isArray(q.options) &&
+        q.options.length === 4 &&
+        q.answer &&
+        ["A", "B", "C", "D"].includes(q.answer),
     );
 
     if (quizQuestions.length === 0) {
-      return NextResponse.json({ 
-        error: "Generated quiz questions are not in the correct format. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Generated quiz questions are not in the correct format. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Validate flashcards
-    flashcardCards = flashcardCards.filter(card => 
-      card.question && 
-      card.answer && 
-      card.question.trim().length > 10 &&
-      card.answer.trim().length > 5
+    flashcardCards = flashcardCards.filter(
+      (card) =>
+        card.question &&
+        card.answer &&
+        card.question.trim().length > 10 &&
+        card.answer.trim().length > 5,
     );
 
     if (flashcardCards.length === 0) {
-      return NextResponse.json({ 
-        error: "Generated flashcards are not in the correct format. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Generated flashcards are not in the correct format. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
-    console.log(`Generated ${quizQuestions.length} quiz questions, ${flashcardCards.length} flashcards, and transcript from PDF content`);
+    console.log(
+      `Generated ${quizQuestions.length} quiz questions, ${flashcardCards.length} flashcards, and transcript from PDF content`,
+    );
 
     // Save all content to database
     const [quiz, flashcards, transcript] = await Promise.all([
       // Save quiz if it doesn't exist
-      existingQuiz || db.quiz.create({
-        data: {
-          fileId,
-          title: "Generated Quiz",
-          questions: {
-            create: quizQuestions.map((q) => ({
-              question: q.question,
-              options: q.options,
-              answer: q.answer,
-            })),
+      existingQuiz ||
+        db.quiz.create({
+          data: {
+            fileId,
+            title: "Generated Quiz",
+            questions: {
+              create: quizQuestions.map((q) => ({
+                question: q.question,
+                options: q.options,
+                answer: q.answer,
+              })),
+            },
           },
-        },
-        include: { questions: true },
-      }),
+          include: { questions: true },
+        }),
       // Save flashcards if they don't exist
-      existingFlashcards || db.flashcards.create({
-        data: {
-          fileId,
-          title: "Generated Flashcards",
-          cards: {
-            create: flashcardCards.map((card) => ({
-              question: card.question,
-              answer: card.answer,
-            })),
+      existingFlashcards ||
+        db.flashcards.create({
+          data: {
+            fileId,
+            title: "Generated Flashcards",
+            cards: {
+              create: flashcardCards.map((card) => ({
+                question: card.question,
+                answer: card.answer,
+              })),
+            },
           },
-        },
-        include: { cards: true },
-      }),
+          include: { cards: true },
+        }),
       // Save transcript if it doesn't exist
-      existingTranscript || db.transcript.create({
-        data: {
-          fileId,
-          title: "Generated Transcript",
-          content: transcriptContent,
-        },
-      }),
+      existingTranscript ||
+        db.transcript.create({
+          data: {
+            fileId,
+            title: "Generated Transcript",
+            content: transcriptContent,
+          },
+        }),
     ]);
 
-    console.log('All content saved to database successfully');
+    console.log("All content saved to database successfully");
     return NextResponse.json({
       quiz,
       flashcards,
       transcript,
-      message: "All content generated and saved successfully"
+      message: "All content generated and saved successfully",
     });
-
   } catch (error) {
     console.error("API error:");
-    return NextResponse.json({ error: "Failed to create content" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create content" },
+      { status: 500 },
+    );
   }
 }

@@ -36,18 +36,18 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
       setFileId(resolvedParams.fileId);
       await fetchFlashcardsAndFile(resolvedParams.fileId);
     };
-    
+
     resolveParams();
   }, [params]);
 
   const fetchFlashcardsAndFile = async (id: string) => {
     try {
       setLoading(true);
-      
+
       // Use Server Actions to fetch data
       const [flashcardsData, fileData] = await Promise.all([
         getFlashcards(id),
-        getFileData(id)
+        getFileData(id),
       ]);
 
       if (flashcardsData.error) {
@@ -55,7 +55,7 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
       } else {
         setFlashcards(flashcardsData.flashcards);
       }
-      
+
       if (!fileData.file) {
         setFile(null);
       } else {
@@ -71,10 +71,10 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
   const generateFlashcards = async () => {
     try {
       setGenerating(true);
-      
-      const response = await fetch('/api/create-flashcards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      const response = await fetch("/api/create-flashcards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId }),
       });
 
@@ -82,10 +82,10 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
         const data = await response.json();
         setFlashcards(data.flashcards);
       } else {
-        console.error('Failed to generate flashcards');
+        console.error("Failed to generate flashcards");
       }
     } catch (error) {
-      console.error('Error generating flashcards:', error);
+      console.error("Error generating flashcards:", error);
     } finally {
       setGenerating(false);
     }
@@ -118,9 +118,11 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <BookOpen className="w-8 h-8 mx-auto mb-4 text-gray-400" />
-          <p className="text-gray-600 mb-4">No flashcards found for this file.</p>
-          <Button 
-            onClick={generateFlashcards} 
+          <p className="text-gray-600 mb-4">
+            No flashcards found for this file.
+          </p>
+          <Button
+            onClick={generateFlashcards}
             disabled={generating}
             className="flex items-center gap-2"
           >
@@ -141,7 +143,5 @@ export default function FlashcardsPage({ params }: FlashcardsPageProps) {
     );
   }
 
-  return (
-    <FlashcardsPageWithSidebar file={file} flashcards={flashcards} />
-  );
+  return <FlashcardsPageWithSidebar file={file} flashcards={flashcards} />;
 }

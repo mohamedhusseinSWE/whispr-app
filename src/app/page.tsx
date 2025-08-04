@@ -72,7 +72,8 @@ export default function Home() {
         <p className="mt-5 max-w-prose text-zinc-700 sm:text-lg animate-in slide-in-from-bottom-6 duration-1000 delay-200">
           Whispr Pdf allows you to have conversations with any PDF document.
           Simply upload your file and start asking questions right away with our
-          AI-powered chat interface. Plus, create quizzes, flashcards, transcripts, and listen to AI-generated podcasts from your documents.
+          AI-powered chat interface. Plus, create quizzes, flashcards,
+          transcripts, and listen to AI-generated podcasts from your documents.
         </p>
 
         <div className="mt-8 flex flex-col sm:flex-row gap-4 animate-in slide-in-from-bottom-8 duration-1000 delay-400">
@@ -269,7 +270,8 @@ export default function Home() {
             Powerful Learning Tools
           </h2>
           <p className="mt-4 text-lg text-gray-600 max-w-2xl mx-auto">
-            Transform your documents into interactive learning experiences with our advanced AI features
+            Transform your documents into interactive learning experiences with
+            our advanced AI features
           </p>
         </div>
 
@@ -279,14 +281,19 @@ export default function Home() {
             <div className="w-12 h-12 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
               <HelpCircle className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Quiz Generator</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              AI Quiz Generator
+            </h3>
             <p className="text-gray-600 mb-4">
-              Generate interactive quizzes from your documents to test knowledge and retention.
+              Generate interactive quizzes from your documents to test knowledge
+              and retention.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Multiple choice questions</span>
+                <span className="text-sm text-gray-600">
+                  Multiple choice questions
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -294,7 +301,9 @@ export default function Home() {
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Performance tracking</span>
+                <span className="text-sm text-gray-600">
+                  Performance tracking
+                </span>
               </div>
             </div>
           </div>
@@ -304,14 +313,19 @@ export default function Home() {
             <div className="w-12 h-12 bg-gradient-to-r from-green-600 to-teal-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
               <Brain className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Smart Flashcards</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Smart Flashcards
+            </h3>
             <p className="text-gray-600 mb-4">
-              Create comprehensive flashcards with key concepts and definitions from your documents.
+              Create comprehensive flashcards with key concepts and definitions
+              from your documents.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Auto-generated content</span>
+                <span className="text-sm text-gray-600">
+                  Auto-generated content
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -319,7 +333,9 @@ export default function Home() {
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Study progress tracking</span>
+                <span className="text-sm text-gray-600">
+                  Study progress tracking
+                </span>
               </div>
             </div>
           </div>
@@ -329,18 +345,25 @@ export default function Home() {
             <div className="w-12 h-12 bg-gradient-to-r from-orange-600 to-red-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
               <BookOpen className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">Document Transcript</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              Document Transcript
+            </h3>
             <p className="text-gray-600 mb-4">
-              Get detailed transcripts of your documents with highlighted key sections and summaries.
+              Get detailed transcripts of your documents with highlighted key
+              sections and summaries.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Structured summaries</span>
+                <span className="text-sm text-gray-600">
+                  Structured summaries
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Key point extraction</span>
+                <span className="text-sm text-gray-600">
+                  Key point extraction
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -354,14 +377,19 @@ export default function Home() {
             <div className="w-12 h-12 bg-gradient-to-r from-purple-600 to-pink-600 rounded-xl flex items-center justify-center shadow-lg mb-4">
               <Headphones className="h-6 w-6 text-white" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-3">AI Podcast</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-3">
+              AI Podcast
+            </h3>
             <p className="text-gray-600 mb-4">
-              Listen to your documents as natural-sounding podcasts with professional voice synthesis.
+              Listen to your documents as natural-sounding podcasts with
+              professional voice synthesis.
             </p>
             <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Natural voice synthesis</span>
+                <span className="text-sm text-gray-600">
+                  Natural voice synthesis
+                </span>
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
@@ -369,7 +397,9 @@ export default function Home() {
               </div>
               <div className="flex items-center space-x-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm text-gray-600">Downloadable audio</span>
+                <span className="text-sm text-gray-600">
+                  Downloadable audio
+                </span>
               </div>
             </div>
           </div>
@@ -387,7 +417,9 @@ export default function Home() {
                   <div className="w-3 h-3 bg-white/40 rounded-full"></div>
                   <div className="ml-auto flex items-center space-x-2">
                     <Lightbulb className="h-5 w-5 text-white" />
-                    <span className="text-white text-sm font-medium">Learning Tools</span>
+                    <span className="text-white text-sm font-medium">
+                      Learning Tools
+                    </span>
                   </div>
                 </div>
               </div>
@@ -397,13 +429,18 @@ export default function Home() {
                 <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                   <div className="flex items-center space-x-2 mb-3">
                     <HelpCircle className="h-5 w-5 text-blue-600" />
-                    <span className="font-semibold text-blue-900">AI-Generated Quiz</span>
+                    <span className="font-semibold text-blue-900">
+                      AI-Generated Quiz
+                    </span>
                   </div>
                   <p className="text-sm text-gray-700 mb-3">
-                    Upload your PDF and get personalized quiz questions based on the actual content
+                    Upload your PDF and get personalized quiz questions based on
+                    the actual content
                   </p>
                   <div className="text-center">
-                    <p className="text-sm text-gray-600">Questions are generated specifically from your document</p>
+                    <p className="text-sm text-gray-600">
+                      Questions are generated specifically from your document
+                    </p>
                   </div>
                 </div>
 
@@ -411,11 +448,17 @@ export default function Home() {
                 <div className="bg-green-50 rounded-lg p-4 border border-green-200">
                   <div className="flex items-center space-x-2 mb-3">
                     <Brain className="h-5 w-5 text-green-600" />
-                    <span className="font-semibold text-green-900">AI-Generated Flashcards</span>
+                    <span className="font-semibold text-green-900">
+                      AI-Generated Flashcards
+                    </span>
                   </div>
                   <div className="text-center">
-                    <p className="text-sm font-medium text-gray-700 mb-2">Personalized Learning Cards</p>
-                    <p className="text-sm text-gray-600">Flashcards created from your document content</p>
+                    <p className="text-sm font-medium text-gray-700 mb-2">
+                      Personalized Learning Cards
+                    </p>
+                    <p className="text-sm text-gray-600">
+                      Flashcards created from your document content
+                    </p>
                   </div>
                 </div>
 
@@ -423,7 +466,9 @@ export default function Home() {
                 <div className="bg-purple-50 rounded-lg p-4 border border-purple-200">
                   <div className="flex items-center space-x-2 mb-3">
                     <Headphones className="h-5 w-5 text-purple-600" />
-                    <span className="font-semibold text-purple-900">Podcast Player</span>
+                    <span className="font-semibold text-purple-900">
+                      Podcast Player
+                    </span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-purple-600 rounded-full flex items-center justify-center">
@@ -431,7 +476,10 @@ export default function Home() {
                     </div>
                     <div className="flex-1">
                       <div className="w-full bg-purple-200 rounded-full h-2">
-                        <div className="bg-purple-600 h-2 rounded-full" style={{width: '45%'}}></div>
+                        <div
+                          className="bg-purple-600 h-2 rounded-full"
+                          style={{ width: "45%" }}
+                        ></div>
                       </div>
                       <p className="text-xs text-gray-600 mt-1">2:15 / 5:00</p>
                     </div>
@@ -448,7 +496,8 @@ export default function Home() {
                 Transform Learning with AI
               </h3>
               <p className="text-gray-600 mb-6">
-                Our advanced AI features help you learn more effectively by creating interactive content from your documents.
+                Our advanced AI features help you learn more effectively by
+                creating interactive content from your documents.
               </p>
             </div>
 
@@ -458,8 +507,12 @@ export default function Home() {
                   <HelpCircle className="h-4 w-4 text-blue-600" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Smart Quiz Generation</h4>
-                  <p className="text-sm text-gray-600">AI creates relevant questions to test your understanding</p>
+                  <h4 className="font-semibold text-gray-900">
+                    Smart Quiz Generation
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    AI creates relevant questions to test your understanding
+                  </p>
                 </div>
               </div>
 
@@ -468,8 +521,12 @@ export default function Home() {
                   <Brain className="h-4 w-4 text-green-600" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Memory Enhancement</h4>
-                  <p className="text-sm text-gray-600">Flashcards use spaced repetition for better retention</p>
+                  <h4 className="font-semibold text-gray-900">
+                    Memory Enhancement
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Flashcards use spaced repetition for better retention
+                  </p>
                 </div>
               </div>
 
@@ -478,8 +535,12 @@ export default function Home() {
                   <BookOpen className="h-4 w-4 text-orange-600" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Structured Learning</h4>
-                  <p className="text-sm text-gray-600">Transcripts organize information for easy review</p>
+                  <h4 className="font-semibold text-gray-900">
+                    Structured Learning
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Transcripts organize information for easy review
+                  </p>
                 </div>
               </div>
 
@@ -488,8 +549,12 @@ export default function Home() {
                   <Headphones className="h-4 w-4 text-purple-600" />
                 </div>
                 <div>
-                  <h4 className="font-semibold text-gray-900">Audio Learning</h4>
-                  <p className="text-sm text-gray-600">Listen to documents while multitasking</p>
+                  <h4 className="font-semibold text-gray-900">
+                    Audio Learning
+                  </h4>
+                  <p className="text-sm text-gray-600">
+                    Listen to documents while multitasking
+                  </p>
                 </div>
               </div>
             </div>
@@ -515,8 +580,8 @@ export default function Home() {
               Start learning in minutes
             </h2>
             <p className="mt-4 text-lg text-gray-600">
-              Chatting, quizzing, and learning from your PDF files has never been easier than with Whispr
-              Pdf.
+              Chatting, quizzing, and learning from your PDF files has never
+              been easier than with Whispr Pdf.
             </p>
           </div>
         </div>
@@ -580,8 +645,9 @@ export default function Home() {
                 Start learning & exploring
               </span>
               <span className="mt-2 text-zinc-700">
-                Chat, quiz yourself, create flashcards, get transcripts, and listen to podcasts. Try out Whispr Pdf today - it really
-                takes less than a minute.
+                Chat, quiz yourself, create flashcards, get transcripts, and
+                listen to podcasts. Try out Whispr Pdf today - it really takes
+                less than a minute.
               </span>
               <div className="flex items-center space-x-2 mt-3">
                 <Clock className="h-4 w-4 text-green-500" />
@@ -776,7 +842,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
     </>
   );
 }

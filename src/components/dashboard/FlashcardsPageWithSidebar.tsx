@@ -22,7 +22,10 @@ interface FlashcardsPageWithSidebarProps {
   flashcards: Flashcard[] | null;
 }
 
-export default function FlashcardsPageWithSidebar({ file, flashcards }: FlashcardsPageWithSidebarProps) {
+export default function FlashcardsPageWithSidebar({
+  file,
+  flashcards,
+}: FlashcardsPageWithSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("flashcards");
   const [loading, setLoading] = useState(false);
@@ -41,10 +44,12 @@ export default function FlashcardsPageWithSidebar({ file, flashcards }: Flashcar
         setLoadingMessage={setLoadingMessage}
       />
       {/* Main content */}
-      <div className={`flex-1 flex flex-col ${sidebarOpen ? 'ml-64' : 'ml-16'} transition-all duration-300`}>
+      <div
+        className={`flex-1 flex flex-col ${sidebarOpen ? "ml-64" : "ml-16"} transition-all duration-300`}
+      >
         {/* Quick Navigation Tabs */}
         <QuickNavTabs fileId={file.id} currentPage="flashcards" />
-        
+
         <div className="flex-1 px-4 py-6 sm:px-6 lg:pl-8 xl:pl-6">
           <FlashcardsPanel fileId={file.id} />
         </div>
@@ -55,11 +60,15 @@ export default function FlashcardsPageWithSidebar({ file, flashcards }: Flashcar
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-8 flex flex-col items-center space-y-4 shadow-xl">
             <Loader2 className="h-8 w-8 text-blue-600 animate-spin" />
-            <p className="text-lg font-medium text-gray-900">{loadingMessage || "Loading..."}</p>
-            <p className="text-sm text-gray-600">Please wait while we process your request</p>
+            <p className="text-lg font-medium text-gray-900">
+              {loadingMessage || "Loading..."}
+            </p>
+            <p className="text-sm text-gray-600">
+              Please wait while we process your request
+            </p>
           </div>
         </div>
       )}
     </div>
   );
-} 
+}

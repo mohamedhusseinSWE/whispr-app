@@ -5,7 +5,11 @@ import { revalidatePath } from "next/cache";
 import { getUserSubscriptionPlan } from "./stripe";
 import { getUserFromRequest } from "./auth";
 import { uploadAudio } from "./audio-upload";
-import { generateAudioFromText, createPodcastSections, formatDuration } from "./audio-generation";
+import {
+  generateAudioFromText,
+  createPodcastSections,
+  formatDuration,
+} from "./audio-generation";
 
 interface PodcastSectionInput {
   title: string;
@@ -33,7 +37,7 @@ export async function getFlashcardsData(fileId: string) {
     const flashcards = await db.flashcards.findFirst({
       where: { fileId },
       include: { cards: true },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: "desc" },
     });
 
     return { flashcards };
@@ -58,7 +62,7 @@ export async function getFileData(fileId: string) {
 
 export async function getQuiz(fileId: string) {
   try {
-    console.log('Fetching quiz for fileId:', fileId);
+    console.log("Fetching quiz for fileId:", fileId);
 
     const quiz = await db.quiz.findFirst({
       where: { fileId },
@@ -78,7 +82,7 @@ export async function getQuiz(fileId: string) {
 
 export async function getFlashcards(fileId: string) {
   try {
-    console.log('Fetching flashcards for fileId:', fileId);
+    console.log("Fetching flashcards for fileId:", fileId);
 
     const flashcards = await db.flashcards.findFirst({
       where: { fileId },
@@ -98,7 +102,7 @@ export async function getFlashcards(fileId: string) {
 
 export async function getTranscript(fileId: string) {
   try {
-    console.log('Fetching transcript for fileId:', fileId);
+    console.log("Fetching transcript for fileId:", fileId);
 
     const transcript = await db.transcript.findFirst({
       where: { fileId },
@@ -117,7 +121,7 @@ export async function getTranscript(fileId: string) {
 
 export async function createAllContent(fileId: string) {
   try {
-    console.log('Create all content server action called with fileId:', fileId);
+    console.log("Create all content server action called with fileId:", fileId);
 
     // Fetch PDF content (chunks)
     const chunks = await db.chunk.findMany({
@@ -131,26 +135,30 @@ export async function createAllContent(fileId: string) {
 
     // Check if content already exists
     const existingQuiz = await db.quiz.findFirst({ where: { fileId } });
-    const existingFlashcards = await db.flashcards.findFirst({ where: { fileId } });
-    const existingTranscript = await db.transcript.findFirst({ where: { fileId } });
+    const existingFlashcards = await db.flashcards.findFirst({
+      where: { fileId },
+    });
+    const existingTranscript = await db.transcript.findFirst({
+      where: { fileId },
+    });
 
     if (existingQuiz && existingFlashcards && existingTranscript) {
-      console.log('All content already exists, returning existing data');
+      console.log("All content already exists, returning existing data");
       return {
         quiz: existingQuiz,
         flashcards: existingFlashcards,
         transcript: existingTranscript,
-        message: "Content already exists"
+        message: "Content already exists",
       };
     }
 
     // For now, return a message indicating that content generation should be done via API
     // This is because server actions have limitations with external API calls
     return {
-      message: "Content generation initiated. Please use the API endpoint for generation.",
-      needsGeneration: true
+      message:
+        "Content generation initiated. Please use the API endpoint for generation.",
+      needsGeneration: true,
     };
-
   } catch (error) {
     console.error("Server action error:", error);
     return { error: "Failed to create content" };
@@ -169,35 +177,35 @@ export async function getSubscriptionPlan() {
         isSubscribed: false,
         isCanceled: false,
         stripeCurrentPeriodEnd: null,
-      }
+      },
     };
   }
 }
 
 export async function getPodcast(fileId: string) {
   try {
-    console.log('=== GET PODCAST SERVER ACTION ===');
-    console.log('Fetching podcast for fileId:', fileId);
+    console.log("=== GET PODCAST SERVER ACTION ===");
+    console.log("Fetching podcast for fileId:", fileId);
 
     const podcast = await db.podcast.findFirst({
       where: { fileId },
       include: {
         sections: {
-          orderBy: { order: 'asc' }
-        }
+          orderBy: { order: "asc" },
+        },
       },
     });
 
     if (!podcast) {
-      console.log('No podcast found for fileId:', fileId);
+      console.log("No podcast found for fileId:", fileId);
       return { error: "Podcast not found" };
     }
 
-    console.log('Podcast found:', {
+    console.log("Podcast found:", {
       id: podcast.id,
       title: podcast.title,
       sectionsCount: podcast.sections.length,
-      totalDuration: podcast.totalDuration
+      totalDuration: podcast.totalDuration,
     });
 
     return { podcast };
@@ -210,19 +218,19 @@ export async function getPodcast(fileId: string) {
 
 export async function createPodcast(fileId: string) {
   try {
-    console.log('=== CREATE PODCAST SERVER ACTION ===');
+    console.log("=== CREATE PODCAST SERVER ACTION ===");
 
     const user = await getUserFromRequest();
     if (!user) {
-      console.log('User not authenticated');
+      console.log("User not authenticated");
       return { error: "Unauthorized" };
     }
 
-    console.log('User authenticated:', user.id);
-    console.log('FileId received:', fileId);
+    console.log("User authenticated:", user.id);
+    console.log("FileId received:", fileId);
 
     if (!fileId) {
-      console.log('No fileId provided');
+      console.log("No fileId provided");
       return { error: "File ID is required" };
     }
 
@@ -235,11 +243,11 @@ export async function createPodcast(fileId: string) {
     });
 
     if (!file) {
-      console.log('File not found or user does not own it');
+      console.log("File not found or user does not own it");
       return { error: "File not found" };
     }
 
-    console.log('File found:', file.name);
+    console.log("File found:", file.name);
 
     // Check if podcast already exists
     const existingPodcast = await db.podcast.findFirst({
@@ -252,7 +260,7 @@ export async function createPodcast(fileId: string) {
     });
 
     if (existingPodcast) {
-      console.log('Existing podcast found, deleting it first');
+      console.log("Existing podcast found, deleting it first");
       // Delete existing podcast and its sections
       await db.podcastSection.deleteMany({
         where: {
@@ -265,7 +273,7 @@ export async function createPodcast(fileId: string) {
           id: existingPodcast.id,
         },
       });
-      console.log('Existing podcast deleted');
+      console.log("Existing podcast deleted");
     }
 
     // Get the file content from chunks
@@ -277,19 +285,27 @@ export async function createPodcast(fileId: string) {
     const chunks = await db.chunk.findMany({
       where: { fileId: file.id },
       take: 30, // Get more content for better generation
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
 
     console.log("🔍 Debug: Found chunks:", chunks.length);
     if (chunks.length > 0) {
-      console.log("🔍 Debug: First chunk preview:", chunks[0].text.substring(0, 100) + "...");
-      console.log("🔍 Debug: Last chunk preview:", chunks[chunks.length - 1].text.substring(0, 100) + "...");
+      console.log(
+        "🔍 Debug: First chunk preview:",
+        chunks[0].text.substring(0, 100) + "...",
+      );
+      console.log(
+        "🔍 Debug: Last chunk preview:",
+        chunks[chunks.length - 1].text.substring(0, 100) + "...",
+      );
     }
 
     let fileContent = "";
 
     if (chunks.length === 0) {
-      console.log("⚠️ No chunks found, trying to extract content from file URL...");
+      console.log(
+        "⚠️ No chunks found, trying to extract content from file URL...",
+      );
 
       // Try to get content from the file URL as fallback
       try {
@@ -297,26 +313,44 @@ export async function createPodcast(fileId: string) {
         if (response.ok) {
           const text = await response.text();
           fileContent = text.substring(0, 5000); // Limit to first 5000 chars
-          console.log("🔍 Debug: Extracted content from file URL, length:", fileContent.length);
-          console.log("🔍 Debug: Content preview:", fileContent.substring(0, 200) + "...");
+          console.log(
+            "🔍 Debug: Extracted content from file URL, length:",
+            fileContent.length,
+          );
+          console.log(
+            "🔍 Debug: Content preview:",
+            fileContent.substring(0, 200) + "...",
+          );
         } else {
           console.error("❌ Failed to fetch file content from URL");
-          return { error: "No content found for this file. Please ensure the PDF was processed successfully." };
+          return {
+            error:
+              "No content found for this file. Please ensure the PDF was processed successfully.",
+          };
         }
       } catch (error) {
         console.error("❌ Error fetching file content:", error);
-        return { error: "No content found for this file. Please ensure the PDF was processed successfully." };
+        return {
+          error:
+            "No content found for this file. Please ensure the PDF was processed successfully.",
+        };
       }
     } else {
       console.log("✅ Using chunks for content, count:", chunks.length);
-      fileContent = chunks.map(chunk => chunk.text).join("\n\n");
+      fileContent = chunks.map((chunk) => chunk.text).join("\n\n");
       console.log("🔍 Debug: Combined content length:", fileContent.length);
-      console.log("🔍 Debug: Content preview:", fileContent.substring(0, 200) + "...");
+      console.log(
+        "🔍 Debug: Content preview:",
+        fileContent.substring(0, 200) + "...",
+      );
     }
 
     if (!fileContent || fileContent.trim().length === 0) {
       console.log("❌ No content available for podcast generation");
-      return { error: "No content found for this file. Please ensure the PDF was processed successfully." };
+      return {
+        error:
+          "No content found for this file. Please ensure the PDF was processed successfully.",
+      };
     }
 
     console.log("=== CREATING PODCAST SECTIONS ===");
@@ -353,7 +387,7 @@ export async function createPodcast(fileId: string) {
             order: index,
           },
         });
-      })
+      }),
     );
 
     console.log("All sections created:", createdSections.length);
@@ -366,7 +400,9 @@ export async function createPodcast(fileId: string) {
       console.log(`=== GENERATING AUDIO FOR SECTION ===`);
       console.log(`🎙️ Generating audio for: ${section.title}`);
       console.log(`📝 Content length: ${section.content.length} characters`);
-      console.log(`📝 Content preview: ${section.content.substring(0, 200)}...`);
+      console.log(
+        `📝 Content preview: ${section.content.substring(0, 200)}...`,
+      );
 
       // Check if we have valid content
       if (!section.content || section.content.trim().length === 0) {
@@ -381,7 +417,9 @@ export async function createPodcast(fileId: string) {
         throw new Error("Generated audio buffer is empty");
       }
 
-      console.log(`🔍 Debug: Audio buffer is valid, size: ${audioBuffer.length} bytes`);
+      console.log(
+        `🔍 Debug: Audio buffer is valid, size: ${audioBuffer.length} bytes`,
+      );
 
       // Use the old UUID-based format for now to ensure compatibility
       const filename = `${podcast.id}-${section.id}.wav`;
@@ -390,9 +428,15 @@ export async function createPodcast(fileId: string) {
       console.log(`✅ Audio uploaded to: ${audioUrl}`);
 
       // Verify the file was actually created
-      const { existsSync } = await import('fs');
-      const { join } = await import('path');
-      const filePath = join(process.cwd(), 'public', 'uploads', 'audio', filename);
+      const { existsSync } = await import("fs");
+      const { join } = await import("path");
+      const filePath = join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "audio",
+        filename,
+      );
       const fileExists = existsSync(filePath);
       console.log(`🔍 Debug: Audio file exists on disk: ${fileExists}`);
       console.log(`🔍 Debug: File path: ${filePath}`);
@@ -415,8 +459,14 @@ export async function createPodcast(fileId: string) {
 
       console.log(`✅ Section updated with audio URL: ${audioUrl}`);
     } catch (error) {
-      console.error(`❌ Error generating audio for section ${section.id}:`, error);
-      console.error(`❌ Error details:`, error instanceof Error ? error.message : error);
+      console.error(
+        `❌ Error generating audio for section ${section.id}:`,
+        error,
+      );
+      console.error(
+        `❌ Error details:`,
+        error instanceof Error ? error.message : error,
+      );
 
       // Create a fallback URL but log that it's not real
       const filename = `${podcast.id}-${section.id}.wav`;
@@ -448,11 +498,13 @@ export async function createPodcast(fileId: string) {
 
     // Calculate total duration based on actual content length
     // Estimate: ~150 words per minute for speech
-    const words = section.content.split(' ').length;
+    const words = section.content.split(" ").length;
     const estimatedMinutes = words / 150; // words per minute
     const totalDurationSeconds = estimatedMinutes * 60;
 
-    console.log(`Content: ${words} words, estimated duration: ${estimatedMinutes.toFixed(1)} minutes`);
+    console.log(
+      `Content: ${words} words, estimated duration: ${estimatedMinutes.toFixed(1)} minutes`,
+    );
 
     // Update podcast with calculated duration
     await db.podcast.update({

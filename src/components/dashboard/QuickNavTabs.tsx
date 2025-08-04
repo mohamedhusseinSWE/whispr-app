@@ -39,43 +39,43 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const navItems = [
-    { 
-      id: "chatbot", 
-      icon: MessageSquare, 
-      label: "Chat Bot", 
+    {
+      id: "chatbot",
+      icon: MessageSquare,
+      label: "Chat Bot",
       path: `/dashboard/${fileId}?view=chatbot`,
-      description: "Ask questions about your document"
+      description: "Ask questions about your document",
     },
-    { 
-      id: "podcast", 
-      icon: Headphones, 
-      label: "Podcast", 
+    {
+      id: "podcast",
+      icon: Headphones,
+      label: "Podcast",
       path: `/dashboard/${fileId}?view=podcast`,
-      description: "Listen to your document as audio"
+      description: "Listen to your document as audio",
     },
-    { 
-      id: "flashcards", 
-      icon: CreditCard, 
-      label: "Flashcards", 
+    {
+      id: "flashcards",
+      icon: CreditCard,
+      label: "Flashcards",
       path: `/dashboard/${fileId}/flashcards`,
       description: "Study with AI-generated flashcards",
-      isGeneration: true
+      isGeneration: true,
     },
-    { 
-      id: "quiz", 
-      icon: Brain, 
-      label: "Quiz", 
+    {
+      id: "quiz",
+      icon: Brain,
+      label: "Quiz",
       path: `/dashboard/${fileId}/quiz`,
       description: "Test your knowledge with quizzes",
-      isGeneration: true
+      isGeneration: true,
     },
-    { 
-      id: "transcript", 
-      icon: FileAudio, 
-      label: "Transcript", 
+    {
+      id: "transcript",
+      icon: FileAudio,
+      label: "Transcript",
       path: `/dashboard/${fileId}/transcript`,
       description: "View document in text format",
-      isGeneration: true
+      isGeneration: true,
     },
   ];
 
@@ -94,9 +94,9 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
         try {
           const response = await fetch(endpoint.url);
           if (response.ok) {
-            setGenerationStatus(prev => ({ 
-              ...prev, 
-              [endpoint.key]: "ready" 
+            setGenerationStatus((prev) => ({
+              ...prev,
+              [endpoint.key]: "ready",
             }));
           }
         } catch (error) {
@@ -108,26 +108,30 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
     checkGenerationStatus();
   }, [fileId]);
 
-  const handleNavClick = async (item: typeof navItems[0]) => {
+  const handleNavClick = async (item: (typeof navItems)[0]) => {
     if (item.id === currentPage || isNavigating) return; // Don't navigate if already on current page or navigating
-    
+
     setIsNavigating(true);
-    
+
     if (item.isGeneration) {
       // For generation pages, trigger generation if not ready
       const status = generationStatus[item.id as keyof GenerationStatus];
       if (status === "idle" || status === "error") {
-        setGenerationStatus(prev => ({ 
-          ...prev, 
-          [item.id]: "generating" 
+        setGenerationStatus((prev) => ({
+          ...prev,
+          [item.id]: "generating",
         }));
 
         try {
-          const endpoint = item.id === "quiz" ? "/api/create-quiz" :
-                          item.id === "flashcards" ? "/api/create-flashcards" :
-                          item.id === "transcript" ? "/api/create-transcript" :
-                          "/api/create-podcast"; // Added podcast generation
-          
+          const endpoint =
+            item.id === "quiz"
+              ? "/api/create-quiz"
+              : item.id === "flashcards"
+                ? "/api/create-flashcards"
+                : item.id === "transcript"
+                  ? "/api/create-transcript"
+                  : "/api/create-podcast"; // Added podcast generation
+
           const response = await fetch(endpoint, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -135,28 +139,28 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
           });
 
           if (response.ok) {
-            setGenerationStatus(prev => ({ 
-              ...prev, 
-              [item.id]: "ready" 
+            setGenerationStatus((prev) => ({
+              ...prev,
+              [item.id]: "ready",
             }));
           } else {
-            setGenerationStatus(prev => ({ 
-              ...prev, 
-              [item.id]: "error" 
+            setGenerationStatus((prev) => ({
+              ...prev,
+              [item.id]: "error",
             }));
           }
         } catch (error) {
-          setGenerationStatus(prev => ({ 
-            ...prev, 
-            [item.id]: "error" 
+          setGenerationStatus((prev) => ({
+            ...prev,
+            [item.id]: "error",
           }));
         }
       }
     }
-    
+
     // Navigate to the page
     router.push(item.path);
-    
+
     // Reset navigation state after a short delay
     setTimeout(() => {
       setIsNavigating(false);
@@ -181,11 +185,32 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
     const status = generationStatus[itemId as keyof GenerationStatus];
     switch (status) {
       case "ready":
-        return <Badge variant="secondary" className="ml-1 text-xs bg-green-100 text-green-800">Ready</Badge>;
+        return (
+          <Badge
+            variant="secondary"
+            className="ml-1 text-xs bg-green-100 text-green-800"
+          >
+            Ready
+          </Badge>
+        );
       case "generating":
-        return <Badge variant="secondary" className="ml-1 text-xs bg-blue-100 text-blue-800">Generating</Badge>;
+        return (
+          <Badge
+            variant="secondary"
+            className="ml-1 text-xs bg-blue-100 text-blue-800"
+          >
+            Generating
+          </Badge>
+        );
       case "error":
-        return <Badge variant="secondary" className="ml-1 text-xs bg-red-100 text-red-800">Error</Badge>;
+        return (
+          <Badge
+            variant="secondary"
+            className="ml-1 text-xs bg-red-100 text-red-800"
+          >
+            Error
+          </Badge>
+        );
       default:
         return null;
     }
@@ -198,7 +223,9 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
           <div className="flex items-center space-x-1">
             <div className="flex items-center space-x-2 mr-4">
               <Sparkles className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-gray-700">Quick Navigation</span>
+              <span className="text-sm font-medium text-gray-700">
+                Quick Navigation
+              </span>
             </div>
             {navItems.map((item) => (
               <div key={item.id} className="relative group">
@@ -218,7 +245,10 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
                   <span>{item.label}</span>
                   {getStatusIcon(item.id)}
                   {currentPage === item.id && (
-                    <Badge variant="secondary" className="ml-1 text-xs bg-blue-100 text-blue-800">
+                    <Badge
+                      variant="secondary"
+                      className="ml-1 text-xs bg-blue-100 text-blue-800"
+                    >
                       Active
                     </Badge>
                   )}
@@ -227,7 +257,7 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
                     <div className="w-3 h-3 border-2 border-gray-300 border-t-blue-600 rounded-full animate-spin ml-1"></div>
                   )}
                 </Button>
-                
+
                 {/* Tooltip */}
                 <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none whitespace-nowrap z-50">
                   {item.description}
@@ -241,4 +271,4 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
   );
 };
 
-export default QuickNavTabs; 
+export default QuickNavTabs;

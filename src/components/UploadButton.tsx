@@ -15,7 +15,10 @@ interface UploadButtonProps {
   disabled?: boolean;
 }
 
-const UploadButton = ({ isSubscribed, disabled = false }: UploadButtonProps) => {
+const UploadButton = ({
+  isSubscribed,
+  disabled = false,
+}: UploadButtonProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
@@ -85,7 +88,9 @@ const UploadButton = ({ isSubscribed, disabled = false }: UploadButtonProps) => 
 
   const handleUploadClick = () => {
     if (disabled) {
-      toast.error("You've reached your free plan limit. Please upgrade to PRO to upload more files.");
+      toast.error(
+        "You've reached your free plan limit. Please upgrade to PRO to upload more files.",
+      );
       return;
     }
     setIsOpen(true);
@@ -94,7 +99,7 @@ const UploadButton = ({ isSubscribed, disabled = false }: UploadButtonProps) => 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
-        <Button 
+        <Button
           disabled={isUploading || disabled}
           onClick={handleUploadClick}
           className={disabled ? "bg-gray-400 cursor-not-allowed" : ""}
@@ -124,9 +129,7 @@ const UploadButton = ({ isSubscribed, disabled = false }: UploadButtonProps) => 
                 <span className="font-semibold">Click to upload</span> or drag
                 and drop
               </p>
-              <p className="text-xs text-zinc-500">
-                PDF (up to 8MB)
-              </p>
+              <p className="text-xs text-zinc-500">PDF (up to 8MB)</p>
             </div>
 
             {selectedFile && (

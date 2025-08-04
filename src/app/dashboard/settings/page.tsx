@@ -1,29 +1,35 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { 
-  User, 
-  Mail, 
-  Crown, 
-  MessageSquare, 
-  Headphones, 
-  Brain, 
-  CreditCard, 
+import React, { useState } from "react";
+import {
+  User,
+  Mail,
+  Crown,
+  MessageSquare,
+  Headphones,
+  Brain,
+  CreditCard,
   FileAudio,
   Settings,
-  LogOut
-} from 'lucide-react';
+  LogOut,
+} from "lucide-react";
 import { trpc } from "@/app/_trpc/client";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import MainSidebar from '@/components/layout/MainSidebar';
-import Header from '@/components/layout/Header';
+import MainSidebar from "@/components/layout/MainSidebar";
+import Header from "@/components/layout/Header";
 import { toast } from "sonner";
 
 export default function SettingsPage() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [activeView, setActiveView] = useState('settings');
+  const [activeView, setActiveView] = useState("settings");
 
   const { data: user, isLoading } = trpc.auth.me.useQuery();
   const { data: subscriptionPlan } = trpc.getSubscriptionPlan.useQuery();
@@ -46,50 +52,54 @@ export default function SettingsPage() {
 
   const features = [
     {
-      id: 'chat-with-pdf',
-      title: 'Chat with PDF',
-      description: 'Ask questions about your document and get instant AI-powered responses',
+      id: "chat-with-pdf",
+      title: "Chat with PDF",
+      description:
+        "Ask questions about your document and get instant AI-powered responses",
       icon: MessageSquare,
-      iconColor: 'text-blue-600',
-      bgColor: 'bg-blue-50',
-      status: 'Active'
+      iconColor: "text-blue-600",
+      bgColor: "bg-blue-50",
+      status: "Active",
     },
     {
-      id: 'listen-to-podcast',
-      title: 'Listen to Podcast',
-      description: 'Convert your documents into engaging audio podcasts with natural voice',
+      id: "listen-to-podcast",
+      title: "Listen to Podcast",
+      description:
+        "Convert your documents into engaging audio podcasts with natural voice",
       icon: Headphones,
-      iconColor: 'text-purple-600',
-      bgColor: 'bg-purple-50',
-      status: 'Active'
+      iconColor: "text-purple-600",
+      bgColor: "bg-purple-50",
+      status: "Active",
     },
     {
-      id: 'quiz',
-      title: 'Quiz',
-      description: 'Test your knowledge with AI-generated quizzes based on your documents',
+      id: "quiz",
+      title: "Quiz",
+      description:
+        "Test your knowledge with AI-generated quizzes based on your documents",
       icon: Brain,
-      iconColor: 'text-green-600',
-      bgColor: 'bg-green-50',
-      status: 'Active'
+      iconColor: "text-green-600",
+      bgColor: "bg-green-50",
+      status: "Active",
     },
     {
-      id: 'flashcards',
-      title: 'Flashcards',
-      description: 'Study efficiently with AI-generated flashcards from your content',
+      id: "flashcards",
+      title: "Flashcards",
+      description:
+        "Study efficiently with AI-generated flashcards from your content",
       icon: CreditCard,
-      iconColor: 'text-orange-600',
-      bgColor: 'bg-orange-50',
-      status: 'Active'
+      iconColor: "text-orange-600",
+      bgColor: "bg-orange-50",
+      status: "Active",
     },
     {
-      id: 'transcript',
-      title: 'Transcript',
-      description: 'Get clean, formatted transcripts of your documents',
+      id: "transcript",
+      title: "Transcript",
+      description: "Get clean, formatted transcripts of your documents",
       icon: FileAudio,
-      iconColor: 'text-red-600',
-      bgColor: 'bg-red-50',
-      status: 'Active'
-    }
+      iconColor: "text-red-600",
+      bgColor: "bg-red-50",
+      status: "Active",
+    },
   ];
 
   if (isLoading) {
@@ -104,19 +114,21 @@ export default function SettingsPage() {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <MainSidebar 
+      <MainSidebar
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         activeView={activeView}
         setActiveView={setActiveView}
       />
-      
-      <div className={`flex-1 overflow-auto ${sidebarOpen ? 'ml-64' : 'ml-16'} transition-all duration-300`}>
-        <Header 
+
+      <div
+        className={`flex-1 overflow-auto ${sidebarOpen ? "ml-64" : "ml-16"} transition-all duration-300`}
+      >
+        <Header
           title="Settings"
           subtitle="Manage your account and preferences"
         />
-        
+
         <div className="p-6 max-w-7xl mx-auto">
           {/* User Profile Section */}
           <Card className="mb-8">
@@ -144,18 +156,24 @@ export default function SettingsPage() {
                   </p>
                 </div>
                 <div className="text-right">
-                  <Badge variant={subscriptionPlan?.isSubscribed ? "default" : "secondary"}>
+                  <Badge
+                    variant={
+                      subscriptionPlan?.isSubscribed ? "default" : "secondary"
+                    }
+                  >
                     {subscriptionPlan?.isSubscribed ? (
                       <Crown className="w-3 h-3 mr-1" />
                     ) : null}
-                    {subscriptionPlan?.isSubscribed ? 'Pro Plan' : 'Free Plan'}
+                    {subscriptionPlan?.isSubscribed ? "Pro Plan" : "Free Plan"}
                   </Badge>
                   {subscriptionPlan?.isSubscribed && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Renews {subscriptionPlan?.stripeCurrentPeriodEnd ? 
-                        new Date(subscriptionPlan.stripeCurrentPeriodEnd).toLocaleDateString() : 
-                        'N/A'
-                      }
+                      Renews{" "}
+                      {subscriptionPlan?.stripeCurrentPeriodEnd
+                        ? new Date(
+                            subscriptionPlan.stripeCurrentPeriodEnd,
+                          ).toLocaleDateString()
+                        : "N/A"}
                     </p>
                   )}
                 </div>
@@ -183,16 +201,22 @@ export default function SettingsPage() {
                   >
                     <div className="flex items-start gap-3">
                       <div className={`p-2 rounded-lg ${feature.bgColor}`}>
-                        <feature.icon className={`w-5 h-5 ${feature.iconColor}`} />
+                        <feature.icon
+                          className={`w-5 h-5 ${feature.iconColor}`}
+                        />
                       </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between mb-1">
-                          <h4 className="font-medium text-gray-900">{feature.title}</h4>
+                          <h4 className="font-medium text-gray-900">
+                            {feature.title}
+                          </h4>
                           <Badge variant="outline" className="text-xs">
                             {feature.status}
                           </Badge>
                         </div>
-                        <p className="text-sm text-gray-600">{feature.description}</p>
+                        <p className="text-sm text-gray-600">
+                          {feature.description}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -215,7 +239,9 @@ export default function SettingsPage() {
                   <LogOut className="w-5 h-5 text-red-600" />
                   <div>
                     <h4 className="font-medium text-red-900">Sign Out</h4>
-                    <p className="text-sm text-red-700">Sign out of your account</p>
+                    <p className="text-sm text-red-700">
+                      Sign out of your account
+                    </p>
                   </div>
                 </div>
                 <Button
@@ -223,7 +249,7 @@ export default function SettingsPage() {
                   onClick={() => logout.mutate()}
                   disabled={logout.isPending}
                 >
-                  {logout.isPending ? 'Signing out...' : 'Sign Out'}
+                  {logout.isPending ? "Signing out..." : "Sign Out"}
                 </Button>
               </div>
             </CardContent>

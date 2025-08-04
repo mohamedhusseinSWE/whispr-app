@@ -1,6 +1,7 @@
 # WhisprPDF - Complete Documentation
 
 ## Table of Contents
+
 1. [Overview](#overview)
 2. [Architecture](#architecture)
 3. [Core Features](#core-features)
@@ -21,6 +22,7 @@
 WhisprPDF is a comprehensive AI-powered document processing platform that transforms PDF documents into interactive learning experiences. The application leverages advanced AI technologies to provide multiple ways of engaging with document content.
 
 ### Key Capabilities
+
 - **Document Chat**: AI-powered conversations with PDF content
 - **Quiz Generation**: Automated quiz creation from document content
 - **Flashcard Creation**: Memory-enhancing flashcards with spaced repetition
@@ -32,6 +34,7 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 ## Architecture
 
 ### Technology Stack
+
 - **Frontend**: Next.js 14 with TypeScript, Tailwind CSS
 - **Backend**: Next.js API Routes with tRPC
 - **Database**: PostgreSQL with Prisma ORM
@@ -41,6 +44,7 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 - **Payments**: Stripe
 
 ### System Architecture
+
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   Frontend      │    │   API Layer     │    │   AI Services   │
@@ -64,6 +68,7 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 **Description**: AI-powered conversational interface for interacting with PDF documents.
 
 **How it Works**:
+
 1. User uploads a PDF document
 2. Document is processed and chunked into searchable segments
 3. AI creates embeddings for each chunk
@@ -74,12 +79,14 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
    - Returns contextual answer with source references
 
 **Key Components**:
+
 - `ChatContext.tsx`: Manages chat state and message history
 - `ChatInput.tsx`: Handles user input and message sending
 - `Messages.tsx`: Displays conversation history
 - `Message.tsx`: Individual message component
 
 **Technical Implementation**:
+
 ```typescript
 // Message processing flow
 1. User input → ChatInput component
@@ -94,6 +101,7 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 **Description**: Automatically generates interactive quizzes from document content.
 
 **How it Works**:
+
 1. Document content is analyzed for key concepts and topics
 2. AI generates multiple-choice questions based on important information
 3. Questions are categorized by difficulty and topic
@@ -101,12 +109,14 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 5. Performance is tracked and stored for progress monitoring
 
 **Key Components**:
+
 - `QuizPageWithSidebar.tsx`: Main quiz interface
 - `QuizPanel.tsx`: Quiz display and interaction
 - Quiz generation API endpoints
 - Performance tracking system
 
 **Quiz Generation Process**:
+
 ```typescript
 // Quiz generation flow
 1. Document analysis → Extract key concepts
@@ -121,6 +131,7 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 **Description**: Creates memory-enhancing flashcards with spaced repetition learning.
 
 **How it Works**:
+
 1. Document content is analyzed for important terms and concepts
 2. AI generates flashcard pairs (term/definition, question/answer)
 3. Flashcards are organized by topic and difficulty
@@ -128,20 +139,22 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 5. Cards are shown at optimal intervals for maximum retention
 
 **Key Components**:
+
 - `FlashcardsPageWithSidebar.tsx`: Main flashcard interface
 - `FlashcardsPanel.tsx`: Flashcard display and interaction
 - Spaced repetition algorithm
 - Progress tracking system
 
 **Spaced Repetition Algorithm**:
+
 ```typescript
 // Spaced repetition intervals (in days)
 const intervals = {
-  again: 1,      // Show again tomorrow
-  hard: 3,       // Show in 3 days
-  good: 7,       // Show in 1 week
-  easy: 14       // Show in 2 weeks
-}
+  again: 1, // Show again tomorrow
+  hard: 3, // Show in 3 days
+  good: 7, // Show in 1 week
+  easy: 14, // Show in 2 weeks
+};
 ```
 
 ### 4. Transcript Generation
@@ -149,6 +162,7 @@ const intervals = {
 **Description**: Creates structured summaries and extracts key points from documents.
 
 **How it Works**:
+
 1. Document is processed and analyzed for structure
 2. AI identifies main sections, key points, and important information
 3. Structured summary is generated with:
@@ -159,34 +173,43 @@ const intervals = {
 4. Transcript is formatted for easy reading and reference
 
 **Key Components**:
+
 - `TranscriptPageWithSidebar.tsx`: Transcript display interface
 - `TranscriptPanel.tsx`: Transcript content and navigation
 - Transcript generation API
 - Export functionality
 
 **Transcript Structure**:
+
 ```markdown
 # Document Transcript
 
 ## Executive Summary
+
 Brief overview of document content and main points
 
 ## Key Points
+
 - Point 1: Description and context
 - Point 2: Description and context
 - Point 3: Description and context
 
 ## Section Breakdown
+
 ### Section 1: [Title]
+
 Content summary and key insights
 
 ### Section 2: [Title]
+
 Content summary and key insights
 
 ## Important Quotes
+
 > "Relevant quote from document"
 
 ## References
+
 - Page numbers and citations
 ```
 
@@ -195,6 +218,7 @@ Content summary and key insights
 **Description**: Converts document content into natural-sounding audio podcasts.
 
 **How it Works**:
+
 1. Document content is processed and structured for audio
 2. Content is divided into logical segments for narration
 3. Text is converted to speech using ElevenLabs TTS
@@ -202,12 +226,14 @@ Content summary and key insights
 5. Users can listen, download, and share the generated audio
 
 **Key Components**:
+
 - `PodcastPageWithSidebar.tsx`: Podcast interface
 - `PodcastPanel.tsx`: Audio player and controls
 - `AudioPlayer.tsx`: Custom audio player component
 - ElevenLabs TTS integration
 
 **Audio Generation Process**:
+
 ```typescript
 // Audio generation flow
 1. Content preparation → Structure document for audio
@@ -225,6 +251,7 @@ Content summary and key insights
 ### File Processing Pipeline
 
 **Upload Process**:
+
 1. **File Validation**: Check file type, size, and security
 2. **Upload**: Store file in UploadThing cloud storage
 3. **Text Extraction**: Extract text content from PDF
@@ -234,9 +261,10 @@ Content summary and key insights
 7. **Processing Complete**: Mark file as ready for use
 
 **Chunking Strategy**:
+
 ```typescript
 const chunkSize = 1000; // characters per chunk
-const overlap = 200;     // overlap between chunks
+const overlap = 200; // overlap between chunks
 
 // Ensures context preservation across chunk boundaries
 ```
@@ -244,12 +272,14 @@ const overlap = 200;     // overlap between chunks
 ### AI Integration
 
 **OpenAI Integration**:
+
 - **Model**: GPT-4 for advanced reasoning and response generation
 - **Context Window**: 8K tokens for comprehensive document processing
 - **Temperature**: 0.7 for balanced creativity and accuracy
 - **Max Tokens**: 1000 for response generation
 
 **Prompt Engineering**:
+
 ```typescript
 // Example prompt structure
 const systemPrompt = `You are an AI assistant helping users understand documents. 
@@ -262,6 +292,7 @@ Context: ${relevantChunks}`;
 ```
 
 **ElevenLabs Integration**:
+
 - **Voice Models**: Multiple voice options for different content types
 - **Audio Quality**: High-fidelity audio generation
 - **Rate Limiting**: Efficient API usage management
@@ -359,47 +390,48 @@ CREATE TABLE podcasts (
 
 ```typescript
 // File Management
-POST /api/uploadthing/core.ts          // File upload handling
-GET  /api/file/[fileId]                // Get file information
-DELETE /api/file/[fileId]              // Delete file
+POST / api / uploadthing / core.ts; // File upload handling
+GET / api / file / [fileId]; // Get file information
+DELETE / api / file / [fileId]; // Delete file
 
 // Chat & Messaging
-POST /api/message                      // Send chat message
-GET  /api/message                      // Get message history
+POST / api / message; // Send chat message
+GET / api / message; // Get message history
 
 // Quiz System
-POST /api/create-quiz                  // Generate quiz from document
-GET  /api/quiz/[fileId]                // Get quiz for file
-POST /api/quiz/[fileId]                // Submit quiz answers
+POST / api / create - quiz; // Generate quiz from document
+GET / api / quiz / [fileId]; // Get quiz for file
+POST / api / quiz / [fileId]; // Submit quiz answers
 
 // Flashcard System
-POST /api/create-flashcards            // Generate flashcards
-GET  /api/flashcards/[fileId]          // Get flashcards for file
-PUT  /api/flashcards/[fileId]          // Update flashcard progress
+POST / api / create - flashcards; // Generate flashcards
+GET / api / flashcards / [fileId]; // Get flashcards for file
+PUT / api / flashcards / [fileId]; // Update flashcard progress
 
 // Transcript System
-POST /api/create-transcript            // Generate transcript
-GET  /api/transcript/[fileId]          // Get transcript for file
+POST / api / create - transcript; // Generate transcript
+GET / api / transcript / [fileId]; // Get transcript for file
 
 // Podcast System
-POST /api/create-podcast               // Generate podcast
-GET  /api/podcast/[fileId]             // Get podcast for file
-POST /api/regenerate-podcast-audio     // Regenerate audio
+POST / api / create - podcast; // Generate podcast
+GET / api / podcast / [fileId]; // Get podcast for file
+POST / api / regenerate - podcast - audio; // Regenerate audio
 
 // Audio Management
-GET  /api/audio/[filename]             // Serve audio files
-POST /api/clear-audio-urls             // Clear audio cache
-POST /api/migrate-audio-files          // Migrate audio files
+GET / api / audio / [filename]; // Serve audio files
+POST / api / clear - audio - urls; // Clear audio cache
+POST / api / migrate - audio - files; // Migrate audio files
 
 // Utility Endpoints
-GET  /api/check-elevenlabs-quota       // Check TTS quota
-POST /api/test-openai-key              // Test OpenAI integration
-GET  /api/debug-audio                  // Debug audio issues
+GET / api / check - elevenlabs - quota; // Check TTS quota
+POST / api / test - openai - key; // Test OpenAI integration
+GET / api / debug - audio; // Debug audio issues
 ```
 
 ### Authentication & Security
 
 **Authentication Flow**:
+
 1. **Registration**: User creates account with email/password
 2. **Login**: Secure authentication with NextAuth.js
 3. **Session Management**: JWT-based session handling
@@ -407,6 +439,7 @@ GET  /api/debug-audio                  // Debug audio issues
 5. **Password Security**: Bcrypt hashing for password storage
 
 **Security Measures**:
+
 - **Input Validation**: Comprehensive validation for all user inputs
 - **SQL Injection Prevention**: Parameterized queries with Prisma
 - **XSS Protection**: Content sanitization and CSP headers
@@ -415,6 +448,7 @@ GET  /api/debug-audio                  // Debug audio issues
 - **Environment Variables**: Secure configuration management
 
 **Data Privacy**:
+
 - **Encryption**: Data encrypted in transit and at rest
 - **User Data Control**: Users can delete their data at any time
 - **No Data Sharing**: User data is never shared with third parties
@@ -427,87 +461,95 @@ GET  /api/debug-audio                  // Debug audio issues
 ### Detailed Processing Steps
 
 **1. File Upload & Validation**
+
 ```typescript
 // File validation process
 const validateFile = (file: File) => {
   const maxSize = 10 * 1024 * 1024; // 10MB
-  const allowedTypes = ['application/pdf'];
-  
-  if (file.size > maxSize) throw new Error('File too large');
-  if (!allowedTypes.includes(file.type)) throw new Error('Invalid file type');
-  
+  const allowedTypes = ["application/pdf"];
+
+  if (file.size > maxSize) throw new Error("File too large");
+  if (!allowedTypes.includes(file.type)) throw new Error("Invalid file type");
+
   return true;
 };
 ```
 
 **2. Text Extraction**
+
 ```typescript
 // PDF text extraction
 const extractText = async (pdfBuffer: Buffer) => {
   const pdf = await pdfjsLib.getDocument(pdfBuffer).promise;
-  let fullText = '';
-  
+  let fullText = "";
+
   for (let i = 1; i <= pdf.numPages; i++) {
     const page = await pdf.getPage(i);
     const textContent = await page.getTextContent();
-    const pageText = textContent.items.map(item => item.str).join(' ');
-    fullText += pageText + '\n';
+    const pageText = textContent.items.map((item) => item.str).join(" ");
+    fullText += pageText + "\n";
   }
-  
+
   return fullText;
 };
 ```
 
 **3. Content Chunking**
+
 ```typescript
 // Intelligent chunking algorithm
-const createChunks = (text: string, chunkSize: number = 1000, overlap: number = 200) => {
+const createChunks = (
+  text: string,
+  chunkSize: number = 1000,
+  overlap: number = 200,
+) => {
   const chunks = [];
   let start = 0;
-  
+
   while (start < text.length) {
     const end = start + chunkSize;
     let chunk = text.slice(start, end);
-    
+
     // Try to break at sentence boundaries
     if (end < text.length) {
-      const lastPeriod = chunk.lastIndexOf('.');
-      const lastNewline = chunk.lastIndexOf('\n');
+      const lastPeriod = chunk.lastIndexOf(".");
+      const lastNewline = chunk.lastIndexOf("\n");
       const breakPoint = Math.max(lastPeriod, lastNewline);
-      
+
       if (breakPoint > start + chunkSize * 0.7) {
         chunk = text.slice(start, breakPoint + 1);
       }
     }
-    
+
     chunks.push({
       content: chunk.trim(),
       start,
-      end: start + chunk.length
+      end: start + chunk.length,
     });
-    
+
     start += chunk.length - overlap;
   }
-  
+
   return chunks;
 };
 ```
 
 **4. Embedding Generation**
+
 ```typescript
 // OpenAI embedding generation
 const generateEmbeddings = async (chunks: string[]) => {
   const embeddings = [];
-  
+
   for (const chunk of chunks) {
     const response = await openai.embeddings.create({
-      model: 'text-embedding-ada-002',
-      input: chunk
+      model: "text-embedding-ada-002",
+      input: chunk,
     });
-    
+
     embeddings.push(response.data[0].embedding);
   }
-  
+
   return embeddings;
 };
 ```
@@ -519,35 +561,38 @@ const generateEmbeddings = async (chunks: string[]) => {
 ### OpenAI GPT-4 Integration
 
 **Model Configuration**:
+
 ```typescript
 const openaiConfig = {
-  model: 'gpt-4',
+  model: "gpt-4",
   temperature: 0.7,
   max_tokens: 1000,
   top_p: 1,
   frequency_penalty: 0,
-  presence_penalty: 0
+  presence_penalty: 0,
 };
 ```
 
 **Context Management**:
+
 ```typescript
 // Context window management
 const buildContext = (relevantChunks: string[], userQuestion: string) => {
   const contextLimit = 6000; // tokens
-  let context = '';
-  
+  let context = "";
+
   for (const chunk of relevantChunks) {
     const chunkWithContext = `\n\nDocument Section:\n${chunk}`;
     if ((context + chunkWithContext).length > contextLimit) break;
     context += chunkWithContext;
   }
-  
+
   return context;
 };
 ```
 
 **Response Generation**:
+
 ```typescript
 // AI response generation with context
 const generateResponse = async (context: string, question: string) => {
@@ -560,17 +605,21 @@ const generateResponse = async (context: string, question: string) => {
   Question: ${question}
   
   Answer:`;
-  
+
   const response = await openai.chat.completions.create({
-    model: 'gpt-4',
+    model: "gpt-4",
     messages: [
-      { role: 'system', content: 'You are a helpful AI assistant that answers questions based on document content.' },
-      { role: 'user', content: prompt }
+      {
+        role: "system",
+        content:
+          "You are a helpful AI assistant that answers questions based on document content.",
+      },
+      { role: "user", content: prompt },
     ],
     temperature: 0.7,
-    max_tokens: 1000
+    max_tokens: 1000,
   });
-  
+
   return response.choices[0].message.content;
 };
 ```
@@ -578,40 +627,45 @@ const generateResponse = async (context: string, question: string) => {
 ### ElevenLabs TTS Integration
 
 **Voice Configuration**:
+
 ```typescript
 const voiceConfig = {
-  voice_id: '21m00Tcm4TlvDq8ikWAM', // Rachel voice
-  model_id: 'eleven_monolingual_v1',
+  voice_id: "21m00Tcm4TlvDq8ikWAM", // Rachel voice
+  model_id: "eleven_monolingual_v1",
   voice_settings: {
     stability: 0.5,
     similarity_boost: 0.5,
     style: 0.0,
-    use_speaker_boost: true
-  }
+    use_speaker_boost: true,
+  },
 };
 ```
 
 **Audio Generation Process**:
+
 ```typescript
 // Text-to-speech conversion
 const generateAudio = async (text: string, voiceId: string) => {
-  const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
-    method: 'POST',
-    headers: {
-      'Accept': 'audio/mpeg',
-      'Content-Type': 'application/json',
-      'xi-api-key': process.env.ELEVENLABS_API_KEY!
+  const response = await fetch(
+    `https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`,
+    {
+      method: "POST",
+      headers: {
+        Accept: "audio/mpeg",
+        "Content-Type": "application/json",
+        "xi-api-key": process.env.ELEVENLABS_API_KEY!,
+      },
+      body: JSON.stringify({
+        text,
+        model_id: "eleven_monolingual_v1",
+        voice_settings: {
+          stability: 0.5,
+          similarity_boost: 0.5,
+        },
+      }),
     },
-    body: JSON.stringify({
-      text,
-      model_id: 'eleven_monolingual_v1',
-      voice_settings: {
-        stability: 0.5,
-        similarity_boost: 0.5
-      }
-    })
-  });
-  
+  );
+
   return response.arrayBuffer();
 };
 ```
@@ -623,6 +677,7 @@ const generateAudio = async (text: string, voiceId: string) => {
 ### Environment Configuration
 
 **Required Environment Variables**:
+
 ```bash
 # Database
 DATABASE_URL="postgresql://user:password@localhost:5432/whisprpdf"
@@ -650,6 +705,7 @@ NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="your-stripe-publishable-key"
 ### Database Setup
 
 **Prisma Migration**:
+
 ```bash
 # Install dependencies
 npm install
@@ -667,17 +723,20 @@ npx prisma db seed
 ### Production Deployment
 
 **Vercel Deployment**:
+
 1. Connect GitHub repository to Vercel
 2. Configure environment variables
 3. Set up custom domain (optional)
 4. Deploy application
 
 **Database Setup**:
+
 1. Create PostgreSQL database (e.g., Supabase, Railway)
 2. Update DATABASE_URL environment variable
 3. Run migrations in production
 
 **File Storage Setup**:
+
 1. Configure UploadThing account
 2. Set up storage buckets
 3. Configure CORS and security settings
@@ -689,21 +748,23 @@ npx prisma db seed
 ### Common Issues
 
 **1. File Upload Failures**
+
 ```typescript
 // Check file size and type
 const maxFileSize = 10 * 1024 * 1024; // 10MB
-const allowedTypes = ['application/pdf'];
+const allowedTypes = ["application/pdf"];
 
 if (file.size > maxFileSize) {
-  throw new Error('File size exceeds 10MB limit');
+  throw new Error("File size exceeds 10MB limit");
 }
 
 if (!allowedTypes.includes(file.type)) {
-  throw new Error('Only PDF files are supported');
+  throw new Error("Only PDF files are supported");
 }
 ```
 
 **2. AI Response Issues**
+
 ```typescript
 // Handle OpenAI API errors
 try {
@@ -711,33 +772,35 @@ try {
     // ... configuration
   });
 } catch (error) {
-  if (error.code === 'insufficient_quota') {
-    throw new Error('OpenAI quota exceeded');
+  if (error.code === "insufficient_quota") {
+    throw new Error("OpenAI quota exceeded");
   }
-  if (error.code === 'rate_limit_exceeded') {
-    throw new Error('Rate limit exceeded. Please try again later.');
+  if (error.code === "rate_limit_exceeded") {
+    throw new Error("Rate limit exceeded. Please try again later.");
   }
-  throw new Error('AI service temporarily unavailable');
+  throw new Error("AI service temporarily unavailable");
 }
 ```
 
 **3. Audio Generation Problems**
+
 ```typescript
 // Handle ElevenLabs API errors
 try {
   const audio = await generateAudio(text, voiceId);
 } catch (error) {
   if (error.status === 429) {
-    throw new Error('Audio generation rate limit exceeded');
+    throw new Error("Audio generation rate limit exceeded");
   }
   if (error.status === 402) {
-    throw new Error('Audio generation quota exceeded');
+    throw new Error("Audio generation quota exceeded");
   }
-  throw new Error('Audio generation failed');
+  throw new Error("Audio generation failed");
 }
 ```
 
 **4. Database Connection Issues**
+
 ```typescript
 // Database connection health check
 const checkDatabaseConnection = async () => {
@@ -745,7 +808,7 @@ const checkDatabaseConnection = async () => {
     await prisma.$queryRaw`SELECT 1`;
     return true;
   } catch (error) {
-    console.error('Database connection failed:', error);
+    console.error("Database connection failed:", error);
     return false;
   }
 };
@@ -754,6 +817,7 @@ const checkDatabaseConnection = async () => {
 ### Performance Optimization
 
 **1. Caching Strategy**
+
 ```typescript
 // Redis caching for frequently accessed data
 const cacheKey = `file:${fileId}:chunks`;
@@ -768,23 +832,25 @@ await redis.setex(cacheKey, 3600, JSON.stringify(chunks));
 ```
 
 **2. Batch Processing**
+
 ```typescript
 // Batch embedding generation
 const batchEmbeddings = async (chunks: string[]) => {
   const batchSize = 100;
   const embeddings = [];
-  
+
   for (let i = 0; i < chunks.length; i += batchSize) {
     const batch = chunks.slice(i, i + batchSize);
     const batchEmbeddings = await generateEmbeddings(batch);
     embeddings.push(...batchEmbeddings);
   }
-  
+
   return embeddings;
 };
 ```
 
 **3. Lazy Loading**
+
 ```typescript
 // Lazy load components for better performance
 const LazyQuizPanel = dynamic(() => import('./QuizPanel'), {
@@ -800,6 +866,7 @@ const LazyQuizPanel = dynamic(() => import('./QuizPanel'), {
 ### Authentication Endpoints
 
 **POST /api/auth/register**
+
 ```typescript
 // Register new user
 {
@@ -820,6 +887,7 @@ const LazyQuizPanel = dynamic(() => import('./QuizPanel'), {
 ```
 
 **POST /api/auth/login**
+
 ```typescript
 // Login user
 {
@@ -842,6 +910,7 @@ const LazyQuizPanel = dynamic(() => import('./QuizPanel'), {
 ### File Management Endpoints
 
 **POST /api/uploadthing/core**
+
 ```typescript
 // Upload file
 FormData: {
@@ -858,6 +927,7 @@ FormData: {
 ```
 
 **GET /api/file/[fileId]**
+
 ```typescript
 // Get file information
 // Response
@@ -873,6 +943,7 @@ FormData: {
 ### Chat Endpoints
 
 **POST /api/message**
+
 ```typescript
 // Send message
 {
@@ -893,6 +964,7 @@ FormData: {
 ### Quiz Endpoints
 
 **POST /api/create-quiz**
+
 ```typescript
 // Generate quiz
 {
@@ -919,6 +991,7 @@ FormData: {
 ### Flashcard Endpoints
 
 **POST /api/create-flashcards**
+
 ```typescript
 // Generate flashcards
 {
@@ -942,6 +1015,7 @@ FormData: {
 ### Transcript Endpoints
 
 **POST /api/create-transcript**
+
 ```typescript
 // Generate transcript
 {
@@ -962,6 +1036,7 @@ FormData: {
 ### Podcast Endpoints
 
 **POST /api/create-podcast**
+
 ```typescript
 // Generate podcast
 {
@@ -985,6 +1060,7 @@ FormData: {
 WhisprPDF is a comprehensive AI-powered document processing platform that transforms static PDF documents into dynamic, interactive learning experiences. The application combines advanced AI technologies with intuitive user interfaces to provide multiple ways of engaging with document content.
 
 ### Key Strengths
+
 - **Comprehensive Feature Set**: Chat, quiz, flashcards, transcript, and podcast generation
 - **Advanced AI Integration**: GPT-4 for intelligent responses and content generation
 - **High-Quality Audio**: ElevenLabs TTS for natural-sounding podcasts
@@ -993,10 +1069,11 @@ WhisprPDF is a comprehensive AI-powered document processing platform that transf
 - **Robust Security**: Comprehensive authentication and data protection
 
 ### Future Enhancements
+
 - **Multi-language Support**: Support for documents in multiple languages
 - **Advanced Analytics**: Detailed learning analytics and progress tracking
 - **Collaborative Features**: Shared documents and collaborative learning
 - **Mobile Application**: Native mobile apps for iOS and Android
 - **Integration APIs**: Third-party integrations for LMS and productivity tools
 
-This documentation provides a comprehensive overview of WhisprPDF's architecture, features, and implementation details. For technical support or feature requests, please refer to the project repository or contact the development team. 
+This documentation provides a comprehensive overview of WhisprPDF's architecture, features, and implementation details. For technical support or feature requests, please refer to the project repository or contact the development team.

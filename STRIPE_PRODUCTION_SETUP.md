@@ -5,6 +5,7 @@ This guide will walk you through setting up Stripe for production use in your Wh
 ## 📋 Prerequisites
 
 Before starting, make sure you have:
+
 - A Stripe account (create one at [stripe.com](https://stripe.com))
 - Access to your Stripe Dashboard
 - Your application deployed and ready for production
@@ -139,39 +140,49 @@ Webhooks are automated messages sent from Stripe to your application when specif
 ### Webhook Events You Need to Handle
 
 #### 1. `customer.subscription.created`
+
 **When it happens**: New customer subscribes to Pro plan
-**What to do**: 
+**What to do**:
+
 - Update user's subscription status in database
 - Grant access to premium features
 - Send welcome email
 - Update user's quota limits
 
 #### 2. `customer.subscription.updated`
+
 **When it happens**: Subscription details change (plan upgrade/downgrade, billing cycle changes)
 **What to do**:
+
 - Update subscription details in database
 - Adjust user's quota and features
 - Send notification email about changes
 
 #### 3. `customer.subscription.deleted`
+
 **When it happens**: Customer cancels subscription or subscription expires
 **What to do**:
+
 - Downgrade user to free plan
 - Remove premium features access
 - Update quota limits
 - Send cancellation confirmation email
 
 #### 4. `invoice.payment_succeeded`
+
 **When it happens**: Successful payment for subscription renewal
 **What to do**:
+
 - Extend subscription period
 - Update billing information
 - Send payment confirmation email
 - Log successful payment
 
 #### 5. `invoice.payment_failed`
+
 **When it happens**: Payment fails (expired card, insufficient funds, etc.)
 **What to do**:
+
 - Send payment failure notification
 - Attempt to retry payment (Stripe handles this)
 - Prepare to downgrade if payment continues to fail
@@ -185,35 +196,35 @@ Your webhook handler is located at `src/app/api/webhooks/stripe/route.ts`. Here'
 // Example webhook handler structure
 export async function POST(req: Request) {
   const body = await req.text();
-  const signature = req.headers.get('stripe-signature');
-  
+  const signature = req.headers.get("stripe-signature");
+
   // Verify webhook signature
   const event = stripe.webhooks.constructEvent(
     body,
     signature!,
-    process.env.STRIPE_WEBHOOK_SECRET!
+    process.env.STRIPE_WEBHOOK_SECRET!,
   );
-  
+
   // Handle different event types
   switch (event.type) {
-    case 'customer.subscription.created':
+    case "customer.subscription.created":
       await handleSubscriptionCreated(event.data.object);
       break;
-    case 'customer.subscription.updated':
+    case "customer.subscription.updated":
       await handleSubscriptionUpdated(event.data.object);
       break;
-    case 'customer.subscription.deleted':
+    case "customer.subscription.deleted":
       await handleSubscriptionDeleted(event.data.object);
       break;
-    case 'invoice.payment_succeeded':
+    case "invoice.payment_succeeded":
       await handlePaymentSucceeded(event.data.object);
       break;
-    case 'invoice.payment_failed':
+    case "invoice.payment_failed":
       await handlePaymentFailed(event.data.object);
       break;
   }
-  
-  return new Response('Webhook processed', { status: 200 });
+
+  return new Response("Webhook processed", { status: 200 });
 }
 ```
 
@@ -237,12 +248,14 @@ export async function POST(req: Request) {
 ### Testing Webhooks Locally
 
 1. **Install Stripe CLI**
+
    ```bash
    # Download from https://stripe.com/docs/stripe-cli
    stripe login
    ```
 
 2. **Forward webhooks to local server**
+
    ```bash
    stripe listen --forward-to localhost:3000/api/webhooks/stripe
    ```
@@ -273,34 +286,43 @@ export async function POST(req: Request) {
 ### Common Webhook Issues & Solutions
 
 #### Issue: Webhook Not Receiving Events
+
 **Causes**:
+
 - Incorrect endpoint URL
 - Server not accessible
 - Firewall blocking requests
 
 **Solutions**:
+
 - Verify endpoint URL is correct
 - Check server is running and accessible
 - Test with Stripe CLI
 
 #### Issue: Webhook Signature Verification Fails
+
 **Causes**:
+
 - Wrong webhook secret
 - Malformed request body
 - Clock skew
 
 **Solutions**:
+
 - Verify webhook secret is correct
 - Check request body parsing
 - Ensure server clock is accurate
 
 #### Issue: Webhook Processing Errors
+
 **Causes**:
+
 - Database connection issues
 - Invalid event data
 - Application errors
 
 **Solutions**:
+
 - Check database connectivity
 - Validate event data structure
 - Implement proper error handling
@@ -337,6 +359,7 @@ Each webhook contains detailed information about the event:
 ### Webhook Retry Logic
 
 Stripe automatically retries failed webhooks:
+
 - **Retry schedule**: 1 minute, 5 minutes, 15 minutes, 1 hour, 3 hours, 6 hours, 12 hours, 24 hours
 - **Maximum retries**: 3 attempts
 - **Success criteria**: HTTP 200 response within 10 seconds
@@ -350,6 +373,7 @@ Stripe automatically retries failed webhooks:
 ### Webhook Debugging Tips
 
 1. **Use Stripe CLI for testing**
+
    ```bash
    stripe listen --print-secret
    ```
@@ -367,6 +391,7 @@ Stripe automatically retries failed webhooks:
 ### Webhook Best Practices Summary
 
 ✅ **Do's**:
+
 - Always verify webhook signatures
 - Return 200 status quickly
 - Process webhooks asynchronously
@@ -376,6 +401,7 @@ Stripe automatically retries failed webhooks:
 - Monitor webhook health
 
 ❌ **Don'ts**:
+
 - Don't ignore webhook failures
 - Don't process webhooks synchronously
 - Don't skip signature verification
@@ -464,19 +490,25 @@ STRIPE_CUSTOMER_PORTAL_URL=https://billing.stripe.com/session/...
 ## 🚨 Common Issues & Solutions
 
 ### Issue 1: Webhook Not Receiving Events
-**Solution**: 
+
+**Solution**:
+
 - Check webhook URL is accessible
 - Verify webhook secret is correct
 - Check server logs for errors
 
 ### Issue 2: Payment Declined
+
 **Solution**:
+
 - Verify card details are correct
 - Check if card supports recurring payments
 - Ensure billing address matches
 
 ### Issue 3: Subscription Not Updating
+
 **Solution**:
+
 - Check webhook events are being processed
 - Verify database updates are working
 - Check application logs
@@ -491,12 +523,14 @@ STRIPE_CUSTOMER_PORTAL_URL=https://billing.stripe.com/session/...
 ## 🔄 Maintenance
 
 ### Regular Tasks
+
 1. **Monitor webhook health** weekly
 2. **Review failed payments** monthly
 3. **Update Stripe SDK** quarterly
 4. **Review pricing** annually
 
 ### Backup Procedures
+
 1. **Export customer data** regularly
 2. **Backup subscription data** monthly
 3. **Test webhook endpoints** after deployments
@@ -525,4 +559,4 @@ Once everything is tested and configured:
 
 ---
 
-**Need Help?** If you encounter any issues during setup, refer to the Stripe documentation or contact your development team for assistance. 
+**Need Help?** If you encounter any issues during setup, refer to the Stripe documentation or contact your development team for assistance.

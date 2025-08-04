@@ -1,7 +1,7 @@
-declare module 'elevenlabs-node' {
+declare module "elevenlabs-node" {
   export class ElevenLabs {
     constructor(config: { apiKey: string });
-    
+
     textToSpeech(params: {
       voiceId: string;
       text: string;
@@ -12,4 +12,4 @@ declare module 'elevenlabs-node' {
       };
     }): Promise<Buffer>;
   }
-} 
+}

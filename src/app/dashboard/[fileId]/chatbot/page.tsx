@@ -14,7 +14,6 @@ interface FileData {
 
 interface ChatbotPageProps {
   params: Promise<{ fileId: string }>;
-
 }
 
 export default function ChatbotPage({ params }: ChatbotPageProps) {

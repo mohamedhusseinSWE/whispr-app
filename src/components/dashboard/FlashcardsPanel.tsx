@@ -1,8 +1,14 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, CreditCard, RefreshCw, Loader2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import React, { useState, useEffect } from "react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  CreditCard,
+  RefreshCw,
+  Loader2,
+} from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface Flashcard {
   id: string;
@@ -32,24 +38,26 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
       try {
         setLoading(true);
         setError(null);
-        
-        console.log('Fetching flashcards for fileId:', fileId);
-        
+
+        console.log("Fetching flashcards for fileId:", fileId);
+
         // First try to get existing flashcards
         const response = await fetch(`/api/flashcards/${fileId}`);
-        
+
         if (response.ok) {
           const data = await response.json();
-          console.log('Flashcards loaded successfully:', data.flashcards);
+          console.log("Flashcards loaded successfully:", data.flashcards);
           setFlashcards(data.flashcards);
         } else {
-          console.log('No flashcards found, will need to generate');
+          console.log("No flashcards found, will need to generate");
           setFlashcards(null);
-          setError("No flashcards found. Click 'Generate Flashcards' to create them from your PDF content.");
+          setError(
+            "No flashcards found. Click 'Generate Flashcards' to create them from your PDF content.",
+          );
         }
       } catch (err: Error) {
-        console.error('Error fetching flashcards:', err);
-        setError(err.message || 'Failed to load flashcards');
+        console.error("Error fetching flashcards:", err);
+        setError(err.message || "Failed to load flashcards");
       } finally {
         setLoading(false);
       }
@@ -64,29 +72,31 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
     try {
       setGenerating(true);
       setError(null);
-      
-      console.log('Generating flashcards for fileId:', fileId);
-      
-      const response = await fetch('/api/create-flashcards', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      console.log("Generating flashcards for fileId:", fileId);
+
+      const response = await fetch("/api/create-flashcards", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ fileId }),
       });
 
-      console.log('Flashcards generation response status:', response.status);
+      console.log("Flashcards generation response status:", response.status);
 
       if (response.ok) {
         const data = await response.json();
-        console.log('Flashcards generated successfully:', data);
+        console.log("Flashcards generated successfully:", data);
         setFlashcards(data.flashcards);
       } else {
         const errorData = await response.json();
-        console.error('Failed to generate flashcards:', errorData);
-        setError(`Failed to generate flashcards: ${errorData.error || 'Unknown error'}`);
+        console.error("Failed to generate flashcards:", errorData);
+        setError(
+          `Failed to generate flashcards: ${errorData.error || "Unknown error"}`,
+        );
       }
     } catch (error: Error) {
-      console.error('Error generating flashcards:', error);
-      setError('Failed to generate flashcards. Please try again.');
+      console.error("Error generating flashcards:", error);
+      setError("Failed to generate flashcards. Please try again.");
     } finally {
       setGenerating(false);
     }
@@ -96,19 +106,21 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
     try {
       setLoading(true);
       setError(null);
-      
+
       const response = await fetch(`/api/flashcards/${fileId}`);
-      
+
       if (response.ok) {
         const data = await response.json();
         setFlashcards(data.flashcards);
       } else {
         setFlashcards(null);
-        setError("No flashcards found. Click 'Generate Flashcards' to create them from your PDF content.");
+        setError(
+          "No flashcards found. Click 'Generate Flashcards' to create them from your PDF content.",
+        );
       }
     } catch (err: Error) {
-      console.error('Error refreshing flashcards:', err);
-      setError(err.message || 'Failed to refresh flashcards');
+      console.error("Error refreshing flashcards:", err);
+      setError(err.message || "Failed to refresh flashcards");
     } finally {
       setLoading(false);
     }
@@ -142,7 +154,9 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
       <div className="p-6 text-center">
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
           <CreditCard className="w-12 h-12 text-yellow-600 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-yellow-800 mb-2">No Flashcards Available</h3>
+          <h3 className="text-lg font-semibold text-yellow-800 mb-2">
+            No Flashcards Available
+          </h3>
           <p className="text-yellow-700 mb-4">{error}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Button
@@ -181,8 +195,12 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
       <div className="p-6 text-center">
         <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 max-w-md mx-auto">
           <CreditCard className="w-12 h-12 text-gray-400 mx-auto mb-4" />
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">No Flashcards</h3>
-          <p className="text-gray-600 mb-4">Generate flashcards from your PDF content to start studying.</p>
+          <h3 className="text-lg font-semibold text-gray-800 mb-2">
+            No Flashcards
+          </h3>
+          <p className="text-gray-600 mb-4">
+            Generate flashcards from your PDF content to start studying.
+          </p>
           <Button
             onClick={generateFlashcards}
             disabled={generating}
@@ -217,10 +235,12 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
           </div>
           <div>
             <h2 className="text-xl font-bold text-gray-900">Flashcards</h2>
-            <p className="text-sm text-gray-600">{flashcards.cards.length} flashcards to study</p>
+            <p className="text-sm text-gray-600">
+              {flashcards.cards.length} flashcards to study
+            </p>
           </div>
         </div>
-        
+
         {/* Action Buttons */}
         <div className="flex items-center space-x-2">
           <Button
@@ -233,7 +253,7 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
             <RefreshCw className="w-4 h-4" />
             Refresh
           </Button>
-          
+
           <Button
             onClick={generateFlashcards}
             variant="outline"
@@ -246,7 +266,7 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
             ) : (
               <CreditCard className="w-4 h-4" />
             )}
-            {generating ? 'Generating...' : 'Regenerate'}
+            {generating ? "Generating..." : "Regenerate"}
           </Button>
         </div>
       </div>
@@ -258,9 +278,7 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
             {currentCard.question}
           </h3>
           <div className="border-t border-gray-200 pt-4">
-            <p className="text-base text-gray-600">
-              {currentCard.answer}
-            </p>
+            <p className="text-base text-gray-600">{currentCard.answer}</p>
           </div>
         </div>
       </div>
@@ -277,11 +295,11 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
           <ChevronLeft className="w-4 h-4" />
           Previous
         </Button>
-        
+
         <span className="text-base font-medium text-gray-700">
           {currentCardIndex + 1} / {flashcards.cards.length}
         </span>
-        
+
         <Button
           onClick={nextCard}
           disabled={currentCardIndex === flashcards.cards.length - 1}
@@ -295,4 +313,4 @@ export function FlashcardsPanel({ fileId }: FlashcardsPanelProps) {
       </div>
     </div>
   );
-} 
+}

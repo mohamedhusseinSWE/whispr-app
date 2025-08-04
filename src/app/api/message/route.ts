@@ -10,7 +10,6 @@ const openai = new OpenAI({
   // No need to set baseURL – default points to OpenAI
 });
 
-
 export const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();

@@ -16,27 +16,36 @@ type Flashcard = {
 export async function POST(req: NextRequest) {
   try {
     const { fileId } = await req.json();
-    console.log('=== CREATE FLASHCARDS API CALLED ===');
-    console.log('Create flashcards API called with fileId:', fileId);
+    console.log("=== CREATE FLASHCARDS API CALLED ===");
+    console.log("Create flashcards API called with fileId:", fileId);
 
     // Fetch PDF content (chunks)
     const chunks = await db.chunk.findMany({
       where: { fileId },
       take: 30, // Get more content for better generation
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
 
-    console.log('Number of chunks found:', chunks.length);
+    console.log("Number of chunks found:", chunks.length);
 
     if (!chunks.length) {
-      console.log('No chunks found for fileId:', fileId);
-      return NextResponse.json({ error: "No PDF content found for this file." }, { status: 400 });
+      console.log("No chunks found for fileId:", fileId);
+      return NextResponse.json(
+        { error: "No PDF content found for this file." },
+        { status: 400 },
+      );
     }
 
     const pdfContent = chunks.map((c) => c.text).join("\n\n");
-    console.log('PDF content length:', pdfContent.length);
-    console.log('PDF content preview (first 1000 chars):', pdfContent.substring(0, 1000));
-    console.log('PDF content preview (last 500 chars):', pdfContent.substring(pdfContent.length - 500));
+    console.log("PDF content length:", pdfContent.length);
+    console.log(
+      "PDF content preview (first 1000 chars):",
+      pdfContent.substring(0, 1000),
+    );
+    console.log(
+      "PDF content preview (last 500 chars):",
+      pdfContent.substring(pdfContent.length - 500),
+    );
 
     // Enhanced prompt for real content generation
     const prompt = `
@@ -65,7 +74,7 @@ IMPORTANT: Create flashcards that test knowledge of the specific facts, people, 
 
 Generate the flashcards now:`;
 
-    console.log('Sending prompt to OpenAI...');
+    console.log("Sending prompt to OpenAI...");
 
     // Call OpenAI with enhanced retry logic
     let cards: Flashcard[] | null = null;
@@ -85,7 +94,8 @@ Generate the flashcards now:`;
           messages: [
             {
               role: "system",
-              content: "You are a professional flashcard creator. You must create flashcards that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic flashcards. Always respond with valid JSON only. If you cannot create specific flashcards from the content, respond with an empty array [].",
+              content:
+                "You are a professional flashcard creator. You must create flashcards that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic flashcards. Always respond with valid JSON only. If you cannot create specific flashcards from the content, respond with an empty array [].",
             },
             {
               role: "user",
@@ -149,9 +159,9 @@ Generate the flashcards now:`;
 
         // Strategy 4: Clean and try to parse
         const cleaned = raw
-          .replace(/^[^{]*/, '')
-          .replace(/[^}]*$/, '')
-          .replace(/```/g, '')
+          .replace(/^[^{]*/, "")
+          .replace(/[^}]*$/, "")
+          .replace(/```/g, "")
           .trim();
 
         try {
@@ -169,14 +179,13 @@ Generate the flashcards now:`;
         if (!cards) {
           console.log(`Attempt ${attempts} failed to parse JSON, retrying...`);
           if (attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Increased delay
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // Increased delay
           }
         }
-
       } catch (error: unknown) {
         console.error(`Error in attempt ${attempts}`);
         if (attempts < maxAttempts) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
         }
       }
     }
@@ -185,25 +194,34 @@ Generate the flashcards now:`;
     if (!cards || !Array.isArray(cards) || cards.length === 0) {
       console.log("=== AI GENERATION FAILED COMPLETELY ===");
       console.log("AI generation failed completely after all attempts");
-      return NextResponse.json({ 
-        error: "Failed to generate flashcards from PDF content. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate flashcards from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Validate and clean cards
-    cards = cards.filter(card => 
-      card.question && 
-      card.answer && 
-      card.question.trim().length > 10 &&
-      card.answer.trim().length > 5
+    cards = cards.filter(
+      (card) =>
+        card.question &&
+        card.answer &&
+        card.question.trim().length > 10 &&
+        card.answer.trim().length > 5,
     );
 
     if (cards.length === 0) {
       console.log("=== VALIDATION FAILED ===");
       console.log("Generated flashcards are not in the correct format");
-      return NextResponse.json({ 
-        error: "Generated flashcards are not in the correct format. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Generated flashcards are not in the correct format. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     console.log("=== FLASHCARDS GENERATION SUCCESSFUL ===");
@@ -229,22 +247,22 @@ Generate the flashcards now:`;
         include: { cards: true },
       });
 
-      console.log('=== FLASHCARDS SAVED TO DATABASE ===');
-      console.log('Flashcards saved to database successfully');
-      console.log('Flashcards ID:', flashcards.id);
-      console.log('Number of cards saved:', flashcards.cards.length);
+      console.log("=== FLASHCARDS SAVED TO DATABASE ===");
+      console.log("Flashcards saved to database successfully");
+      console.log("Flashcards ID:", flashcards.id);
+      console.log("Number of cards saved:", flashcards.cards.length);
       return NextResponse.json({ flashcards });
     } catch (dbError: unknown) {
-      console.error('=== DATABASE ERROR ===');
-      console.error('Database error:', dbError);
+      console.error("=== DATABASE ERROR ===");
+      console.error("Database error:", dbError);
       // Return the generated cards even if DB save fails
       const flashcards = {
-        id: 'generated-flashcards-id',
+        id: "generated-flashcards-id",
         fileId,
         title: "Generated Flashcards",
         cards: cards.map((card: Flashcard, index: number) => ({
           id: `card-${index}`,
-          flashcardsId: 'generated-flashcards-id',
+          flashcardsId: "generated-flashcards-id",
           question: card.question,
           answer: card.answer,
           createdAt: new Date(),
@@ -256,6 +274,9 @@ Generate the flashcards now:`;
   } catch (error: unknown) {
     console.error("=== API ERROR ===");
     console.error("API error:", error);
-    return NextResponse.json({ error: "Failed to create flashcards" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create flashcards" },
+      { status: 500 },
+    );
   }
 }

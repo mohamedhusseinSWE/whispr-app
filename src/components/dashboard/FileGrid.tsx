@@ -1,10 +1,8 @@
+"use client";
 
-
-'use client';
-
-import React from 'react';
-import { FileText, Plus, MoreVertical } from 'lucide-react';
-import Link from 'next/link';
+import React from "react";
+import { FileText, Plus, MoreVertical } from "lucide-react";
+import Link from "next/link";
 
 interface FileData {
   id: string;
@@ -39,13 +37,15 @@ const FileGrid: React.FC<FileGridProps> = ({ files }) => (
             <div className="p-3 bg-purple-100 rounded-lg">
               <FileText className="w-6 h-6 text-purple-600" />
             </div>
-            
+
             <div className="flex-1">
               <h3 className="font-semibold text-gray-900 mb-1">{file.name}</h3>
-              <p className="text-sm text-gray-600">Created on {file.uploadDate}</p>
+              <p className="text-sm text-gray-600">
+                Created on {file.uploadDate}
+              </p>
             </div>
-            
-            <button 
+
+            <button
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
@@ -63,4 +63,3 @@ const FileGrid: React.FC<FileGridProps> = ({ files }) => (
 );
 
 export default FileGrid;
-

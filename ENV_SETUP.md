@@ -59,4 +59,4 @@ If you don't want to set up the API key, the application now includes:
 2. **Browser Speech Synthesis**: Uses your browser's built-in speech synthesis as a fallback
 3. **Error Handling**: Clear messages when audio fails to load
 
-The ringtone issue should now be resolved with any of these approaches! 
+The ringtone issue should now be resolved with any of these approaches!

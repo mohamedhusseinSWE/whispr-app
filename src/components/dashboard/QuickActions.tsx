@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ChevronDown } from 'lucide-react';
+import React from "react";
+import { ChevronDown } from "lucide-react";
 
 interface QuickAction {
   id: string;
@@ -17,7 +17,10 @@ interface QuickActionsProps {
   onActionClick?: (action: QuickAction) => void;
 }
 
-const QuickActions: React.FC<QuickActionsProps> = ({ actions, onActionClick }) => (
+const QuickActions: React.FC<QuickActionsProps> = ({
+  actions,
+  onActionClick,
+}) => (
   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 mb-8">
     {actions.map((action) => (
       <div
@@ -31,7 +34,9 @@ const QuickActions: React.FC<QuickActionsProps> = ({ actions, onActionClick }) =
               <action.icon className={`w-6 h-6 ${action.iconColor}`} />
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-1">{action.title}</h3>
+              <h3 className="font-semibold text-gray-900 mb-1">
+                {action.title}
+              </h3>
               <p className="text-gray-600 text-sm">{action.description}</p>
             </div>
           </div>
@@ -43,4 +48,3 @@ const QuickActions: React.FC<QuickActionsProps> = ({ actions, onActionClick }) =
 );
 
 export default QuickActions;
-

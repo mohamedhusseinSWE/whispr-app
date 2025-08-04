@@ -45,7 +45,11 @@ interface BillingModalProps {
   subscriptionPlan: SubscriptionPlan;
 }
 
-const BillingModal = ({ isOpen, onClose, subscriptionPlan }: BillingModalProps) => {
+const BillingModal = ({
+  isOpen,
+  onClose,
+  subscriptionPlan,
+}: BillingModalProps) => {
   const { mutate: createStripeSession, isPending } =
     trpc.createStripeSession.useMutation({
       onSuccess: ({ url }) => {
@@ -80,7 +84,8 @@ const BillingModal = ({ isOpen, onClose, subscriptionPlan }: BillingModalProps) 
             <CardHeader className="pb-3">
               <CardTitle className="text-sm">Current Plan</CardTitle>
               <CardDescription>
-                You are currently on the <strong>{subscriptionPlan.name || "Free"}</strong> plan.
+                You are currently on the{" "}
+                <strong>{subscriptionPlan.name || "Free"}</strong> plan.
               </CardDescription>
             </CardHeader>
           </Card>
@@ -118,25 +123,28 @@ const BillingModal = ({ isOpen, onClose, subscriptionPlan }: BillingModalProps) 
           </Card>
 
           {/* Subscription Info */}
-          {subscriptionPlan.isSubscribed && subscriptionPlan.stripeCurrentPeriodEnd && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-sm">Subscription Details</CardTitle>
-              </CardHeader>
-              <CardFooter>
-                <p className="text-xs text-gray-600">
-                  {subscriptionPlan.isCanceled
-                    ? "Your plan will be canceled on "
-                    : "Your plan renews on "}
-                  {format(
-                    new Date(subscriptionPlan.stripeCurrentPeriodEnd),
-                    "dd.MM.yyyy",
-                  )}
-                  .
-                </p>
-              </CardFooter>
-            </Card>
-          )}
+          {subscriptionPlan.isSubscribed &&
+            subscriptionPlan.stripeCurrentPeriodEnd && (
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-sm">
+                    Subscription Details
+                  </CardTitle>
+                </CardHeader>
+                <CardFooter>
+                  <p className="text-xs text-gray-600">
+                    {subscriptionPlan.isCanceled
+                      ? "Your plan will be canceled on "
+                      : "Your plan renews on "}
+                    {format(
+                      new Date(subscriptionPlan.stripeCurrentPeriodEnd),
+                      "dd.MM.yyyy",
+                    )}
+                    .
+                  </p>
+                </CardFooter>
+              </Card>
+            )}
         </div>
 
         <div className="flex gap-3 pt-4">
@@ -159,4 +167,4 @@ const BillingModal = ({ isOpen, onClose, subscriptionPlan }: BillingModalProps) 
   );
 };
 
-export default BillingModal; 
+export default BillingModal;

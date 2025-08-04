@@ -53,48 +53,48 @@ export const appRouter = router({
         await db.podcastSection.deleteMany({
           where: {
             podcast: {
-              fileId: input.id
-            }
-          }
+              fileId: input.id,
+            },
+          },
         });
 
         // 2. Delete podcasts
         await db.podcast.deleteMany({
           where: {
-            fileId: input.id
-          }
+            fileId: input.id,
+          },
         });
 
         // 3. Delete quiz questions first (they reference quizzes)
         await db.quizQuestion.deleteMany({
           where: {
             quiz: {
-              fileId: input.id
-            }
-          }
+              fileId: input.id,
+            },
+          },
         });
 
         // 4. Delete quizzes
         await db.quiz.deleteMany({
           where: {
-            fileId: input.id
-          }
+            fileId: input.id,
+          },
         });
 
         // 5. Delete flashcards
         await db.flashcard.deleteMany({
           where: {
             flashcards: {
-              fileId: input.id
-            }
-          }
+              fileId: input.id,
+            },
+          },
         });
 
         // 6. Delete flashcards sets
         await db.flashcards.deleteMany({
           where: {
-            fileId: input.id
-          }
+            fileId: input.id,
+          },
         });
 
         // 7. Messages and Chunks will be deleted automatically due to onDelete: Cascade
@@ -106,13 +106,15 @@ export const appRouter = router({
           },
         });
 
-        console.log(`✅ Successfully deleted file ${input.id} and all related records`);
+        console.log(
+          `✅ Successfully deleted file ${input.id} and all related records`,
+        );
         return file;
       } catch (error) {
         console.error("❌ Error deleting file and related records:", error);
-        throw new TRPCError({ 
+        throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
-          message: "Failed to delete file and related records"
+          message: "Failed to delete file and related records",
         });
       }
     }),

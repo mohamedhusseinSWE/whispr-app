@@ -5,12 +5,7 @@ import { Card, CardContent } from "../ui/card";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
 import { Progress } from "../ui/progress";
-import {
-  ChevronLeft,
-  ChevronRight,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { ChevronLeft, ChevronRight, CheckCircle, XCircle } from "lucide-react";
 
 // Match the Prisma schema structure
 interface QuizQuestion {
@@ -51,7 +46,7 @@ export default function QuizPanel({ quiz }: QuizPanelProps) {
   const isAnswerCorrect = (
     selectedAnswer: string,
     correctAnswer: string,
-    options: string[]
+    options: string[],
   ) => {
     // The correctAnswer is the index/letter (e.g., "A", "B", "C", "D")
     // We need to find the corresponding option text
@@ -74,7 +69,7 @@ export default function QuizPanel({ quiz }: QuizPanelProps) {
   const correctCount = quiz.questions.filter(
     (question, index) =>
       answered[index] &&
-      isAnswerCorrect(selected[index], question.answer, question.options)
+      isAnswerCorrect(selected[index], question.answer, question.options),
   ).length;
 
   const incorrectCount = answeredCount - correctCount;
@@ -109,7 +104,7 @@ export default function QuizPanel({ quiz }: QuizPanelProps) {
   const isCurrentAnswerCorrect = isAnswerCorrect(
     selected[current],
     q.answer,
-    q.options
+    q.options,
   );
 
   return (
@@ -287,10 +282,10 @@ export default function QuizPanel({ quiz }: QuizPanelProps) {
                     {correctCount === total
                       ? "Perfect score! You&apos;re a quiz master! 🏆"
                       : correctCount >= total * 0.8
-                      ? "Excellent work! You&apos;re doing great! 🌟"
-                      : correctCount >= total * 0.6
-                      ? "Good job! Keep practicing to improve! 💪"
-                      : "Keep studying! Practice makes perfect! 📚"}
+                        ? "Excellent work! You&apos;re doing great! 🌟"
+                        : correctCount >= total * 0.6
+                          ? "Good job! Keep practicing to improve! 💪"
+                          : "Keep studying! Practice makes perfect! 📚"}
                   </p>
                 </div>
               </CardContent>

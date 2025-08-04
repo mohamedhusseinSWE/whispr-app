@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Home, Settings, Menu, X } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter, usePathname } from 'next/navigation';
+import React from "react";
+import { Home, Settings, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { useRouter, usePathname } from "next/navigation";
 import { trpc } from "@/app/_trpc/client";
 import Image from "next/image";
 
@@ -14,32 +14,42 @@ interface MainSidebarProps {
   setActiveView: (view: string) => void;
 }
 
-const MainSidebar: React.FC<MainSidebarProps> = ({ 
-  sidebarOpen, 
-  setSidebarOpen, 
-  activeView, 
-  setActiveView
+const MainSidebar: React.FC<MainSidebarProps> = ({
+  sidebarOpen,
+  setSidebarOpen,
+  activeView,
+  setActiveView,
 }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { data: user } = trpc.auth.me.useQuery();
 
   const mainSidebarItems = [
-    { id: 'dashboard', icon: Home, label: 'Dashboard', href: '/dashboard' },
-    { id: 'settings', icon: Settings, label: 'Settings', href: '/dashboard/settings' }
+    { id: "dashboard", icon: Home, label: "Dashboard", href: "/dashboard" },
+    {
+      id: "settings",
+      icon: Settings,
+      label: "Settings",
+      href: "/dashboard/settings",
+    },
   ];
 
-  const handleNavigation = (item: typeof mainSidebarItems[0]) => {
+  const handleNavigation = (item: (typeof mainSidebarItems)[0]) => {
     setActiveView(item.id);
     router.push(item.href);
   };
 
   return (
-    <div className={`${sidebarOpen ? 'w-64' : 'w-16'} bg-white border-r border-gray-200 transition-all duration-300 fixed top-16 left-0 h-[calc(100vh-4rem)] flex flex-col overflow-hidden z-40`}>
+    <div
+      className={`${sidebarOpen ? "w-64" : "w-16"} bg-white border-r border-gray-200 transition-all duration-300 fixed top-16 left-0 h-[calc(100vh-4rem)] flex flex-col overflow-hidden z-40`}
+    >
       {/* Header - Fixed */}
       <div className="flex-shrink-0 p-4 border-b border-gray-100">
         <div className="flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity">
+          <Link
+            href="/dashboard"
+            className="flex items-center space-x-3 cursor-pointer hover:opacity-80 transition-opacity"
+          >
             <Image
               src="/logo.png"
               alt="Whispr PDF Logo"
@@ -47,13 +57,21 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
               height={54}
               className="rounded-sm"
             />
-            {sidebarOpen && <span className="font-bold text-lg text-gray-800">Whispr PDF</span>}
+            {sidebarOpen && (
+              <span className="font-bold text-lg text-gray-800">
+                Whispr PDF
+              </span>
+            )}
           </Link>
           <button
             onClick={() => setSidebarOpen(!sidebarOpen)}
             className="p-1 hover:bg-gray-100 rounded transition-colors"
           >
-            {sidebarOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {sidebarOpen ? (
+              <X className="w-4 h-4" />
+            ) : (
+              <Menu className="w-4 h-4" />
+            )}
           </button>
         </div>
       </div>
@@ -68,13 +86,15 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
                 key={item.id}
                 onClick={() => handleNavigation(item)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 text-left hover:bg-gray-50 transition-colors ${
-                  isActive 
-                    ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' 
-                    : 'text-gray-700 hover:text-gray-900'
+                  isActive
+                    ? "bg-blue-50 text-blue-600 border-r-2 border-blue-600"
+                    : "text-gray-700 hover:text-gray-900"
                 }`}
               >
                 <item.icon className="w-5 h-5 flex-shrink-0" />
-                {sidebarOpen && <span className="font-medium truncate">{item.label}</span>}
+                {sidebarOpen && (
+                  <span className="font-medium truncate">{item.label}</span>
+                )}
               </button>
             );
           })}
@@ -87,18 +107,20 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
               <span className="text-white text-sm font-medium">
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+                {user?.name?.charAt(0).toUpperCase() || "U"}
               </span>
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-gray-900 truncate">{user?.name || 'User'}</p>
+              <p className="text-sm font-medium text-gray-900 truncate">
+                {user?.name || "User"}
+              </p>
             </div>
           </div>
         ) : (
           <div className="flex justify-center">
             <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
               <span className="text-white text-sm font-medium">
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
+                {user?.name?.charAt(0).toUpperCase() || "U"}
               </span>
             </div>
           </div>
@@ -109,4 +131,3 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
 };
 
 export default MainSidebar;
-

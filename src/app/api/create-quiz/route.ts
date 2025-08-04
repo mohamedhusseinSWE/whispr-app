@@ -17,27 +17,36 @@ interface QuizQuestion {
 export async function POST(req: NextRequest) {
   try {
     const { fileId } = await req.json();
-    console.log('=== CREATE QUIZ API CALLED ===');
-    console.log('Create quiz API called with fileId:', fileId);
+    console.log("=== CREATE QUIZ API CALLED ===");
+    console.log("Create quiz API called with fileId:", fileId);
 
     // Fetch PDF content (chunks)
     const chunks = await db.chunk.findMany({
       where: { fileId },
       take: 30, // Get more content for better generation
-      orderBy: { createdAt: 'asc' },
+      orderBy: { createdAt: "asc" },
     });
 
-    console.log('Number of chunks found:', chunks.length);
+    console.log("Number of chunks found:", chunks.length);
 
     if (!chunks.length) {
-      console.log('No chunks found for fileId:', fileId);
-      return NextResponse.json({ error: "No PDF content found for this file." }, { status: 400 });
+      console.log("No chunks found for fileId:", fileId);
+      return NextResponse.json(
+        { error: "No PDF content found for this file." },
+        { status: 400 },
+      );
     }
 
     const pdfContent = chunks.map((c) => c.text).join("\n\n");
-    console.log('PDF content length:', pdfContent.length);
-    console.log('PDF content preview (first 1000 chars):', pdfContent.substring(0, 1000));
-    console.log('PDF content preview (last 500 chars):', pdfContent.substring(pdfContent.length - 500));
+    console.log("PDF content length:", pdfContent.length);
+    console.log(
+      "PDF content preview (first 1000 chars):",
+      pdfContent.substring(0, 1000),
+    );
+    console.log(
+      "PDF content preview (last 500 chars):",
+      pdfContent.substring(pdfContent.length - 500),
+    );
 
     // Enhanced prompt for real content generation
     const prompt = `
@@ -67,7 +76,7 @@ IMPORTANT: Create questions that test knowledge of the specific facts, people, e
 
 Generate the quiz now:`;
 
-    console.log('Sending prompt to OpenAI...');
+    console.log("Sending prompt to OpenAI...");
 
     // Call OpenAI with enhanced retry logic
     let questions = null;
@@ -87,7 +96,8 @@ Generate the quiz now:`;
           messages: [
             {
               role: "system",
-              content: "You are a professional quiz creator. You must create questions that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic questions. Always respond with valid JSON only. If you cannot create specific questions from the content, respond with an empty array [].",
+              content:
+                "You are a professional quiz creator. You must create questions that are SPECIFIC to the provided content. Use exact facts, names, dates, and details from the text. Never create generic questions. Always respond with valid JSON only. If you cannot create specific questions from the content, respond with an empty array [].",
             },
             {
               role: "user",
@@ -151,9 +161,9 @@ Generate the quiz now:`;
 
         // Strategy 4: Clean and try to parse
         const cleaned = raw
-          .replace(/^[^{]*/, '')
-          .replace(/[^}]*$/, '')
-          .replace(/```/g, '')
+          .replace(/^[^{]*/, "")
+          .replace(/[^}]*$/, "")
+          .replace(/```/g, "")
           .trim();
 
         try {
@@ -171,14 +181,13 @@ Generate the quiz now:`;
         if (!questions) {
           console.log(`Attempt ${attempts} failed to parse JSON, retrying...`);
           if (attempts < maxAttempts) {
-            await new Promise(resolve => setTimeout(resolve, 2000)); // Increased delay
+            await new Promise((resolve) => setTimeout(resolve, 2000)); // Increased delay
           }
         }
-
       } catch (error: unknown) {
         console.error(`Error in attempt ${attempts}`);
         if (attempts < maxAttempts) {
-          await new Promise(resolve => setTimeout(resolve, 2000));
+          await new Promise((resolve) => setTimeout(resolve, 2000));
         }
       }
     }
@@ -187,30 +196,41 @@ Generate the quiz now:`;
     if (!questions || !Array.isArray(questions) || questions.length === 0) {
       console.log("=== AI GENERATION FAILED COMPLETELY ===");
       console.log("AI generation failed completely after all attempts");
-      return NextResponse.json({ 
-        error: "Failed to generate quiz questions from PDF content. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Failed to generate quiz questions from PDF content. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     // Validate and clean questions
-    questions = questions.filter(q => 
-      q.question && 
-      Array.isArray(q.options) && 
-      q.options.length === 4 && 
-      q.answer && 
-      ['A', 'B', 'C', 'D'].includes(q.answer)
+    questions = questions.filter(
+      (q) =>
+        q.question &&
+        Array.isArray(q.options) &&
+        q.options.length === 4 &&
+        q.answer &&
+        ["A", "B", "C", "D"].includes(q.answer),
     );
 
     if (questions.length === 0) {
       console.log("=== VALIDATION FAILED ===");
       console.log("Generated questions are not in the correct format");
-      return NextResponse.json({ 
-        error: "Generated questions are not in the correct format. Please try again." 
-      }, { status: 500 });
+      return NextResponse.json(
+        {
+          error:
+            "Generated questions are not in the correct format. Please try again.",
+        },
+        { status: 500 },
+      );
     }
 
     console.log("=== QUIZ GENERATION SUCCESSFUL ===");
-    console.log(`Generated ${questions.length} valid quiz questions from PDF content:`);
+    console.log(
+      `Generated ${questions.length} valid quiz questions from PDF content:`,
+    );
     questions.forEach((q, index) => {
       console.log(`Question ${index + 1}:`, q.question);
       console.log(`Options:`, q.options);
@@ -234,23 +254,23 @@ Generate the quiz now:`;
         include: { questions: true },
       });
 
-      console.log('=== QUIZ SAVED TO DATABASE ===');
-      console.log('Quiz saved to database successfully');
-      console.log('Quiz ID:', quiz.id);
-      console.log('Number of questions saved:', quiz.questions.length);
+      console.log("=== QUIZ SAVED TO DATABASE ===");
+      console.log("Quiz saved to database successfully");
+      console.log("Quiz ID:", quiz.id);
+      console.log("Number of questions saved:", quiz.questions.length);
       return NextResponse.json({ quiz });
     } catch (dbError: unknown) {
-      console.error('=== DATABASE ERROR ===');
-      console.error('Database error:', dbError);
+      console.error("=== DATABASE ERROR ===");
+      console.error("Database error:", dbError);
       // Return the generated questions even if DB save fails
-      console.log('Database save failed, returning generated questions');
+      console.log("Database save failed, returning generated questions");
       const quiz = {
-        id: 'generated-quiz-id',
+        id: "generated-quiz-id",
         fileId,
         title: "Generated Quiz",
         questions: questions.map((q: QuizQuestion, index: number) => ({
           id: `question-${index}`,
-          quizId: 'generated-quiz-id',
+          quizId: "generated-quiz-id",
           question: q.question,
           options: q.options,
           answer: q.answer,
@@ -263,6 +283,9 @@ Generate the quiz now:`;
   } catch (error: unknown) {
     console.error("=== API ERROR ===");
     console.error("API error:", error);
-    return NextResponse.json({ error: "Failed to create quiz" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to create quiz" },
+      { status: 500 },
+    );
   }
 }

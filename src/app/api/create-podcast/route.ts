@@ -2,7 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { getUserFromRequest } from "@/lib/auth";
 import { uploadAudio } from "@/lib/audio-upload";
-import { generateAudioFromText, createPodcastSections } from "@/lib/audio-generation";
+import {
+  generateAudioFromText,
+  createPodcastSections,
+} from "@/lib/audio-generation";
 
 type PodcastSectionInput = {
   title: string;
@@ -22,7 +25,7 @@ export async function POST(request: NextRequest) {
     if (!fileId) {
       return NextResponse.json(
         { error: "File ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -74,42 +77,65 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("🔍 Debug: Found chunks:", chunks.length);
-    console.log("🔍 Debug: Chunks content:", chunks.map(c => c.text.substring(0, 50) + "..."));
+    console.log(
+      "🔍 Debug: Chunks content:",
+      chunks.map((c) => c.text.substring(0, 50) + "..."),
+    );
 
     let fileContent = "";
     if (chunks.length === 0) {
-      console.log("⚠️ No chunks found, trying to extract content from file URL...");
+      console.log(
+        "⚠️ No chunks found, trying to extract content from file URL...",
+      );
       // Try to get content from the file URL as fallback
       try {
         const response = await fetch(file.url);
         if (response.ok) {
           const text = await response.text();
           fileContent = text.substring(0, 5000); // Limit to first 5000 chars
-          console.log("🔍 Debug: Extracted content from file URL, length:", fileContent.length);
-          console.log("🔍 Debug: Content preview:", fileContent.substring(0, 200) + "...");
+          console.log(
+            "🔍 Debug: Extracted content from file URL, length:",
+            fileContent.length,
+          );
+          console.log(
+            "🔍 Debug: Content preview:",
+            fileContent.substring(0, 200) + "...",
+          );
         } else {
           console.error("❌ Failed to fetch file content from URL");
           return NextResponse.json(
-            { error: "No content found for this file. Please ensure the PDF was processed successfully." },
-            { status: 400 }
+            {
+              error:
+                "No content found for this file. Please ensure the PDF was processed successfully.",
+            },
+            { status: 400 },
           );
         }
       } catch (error) {
         console.error("❌ Error fetching file content:", error);
         return NextResponse.json(
-          { error: "No content found for this file. Please ensure the PDF was processed successfully." },
-          { status: 400 }
+          {
+            error:
+              "No content found for this file. Please ensure the PDF was processed successfully.",
+          },
+          { status: 400 },
         );
       }
     } else {
       console.log("✅ Using chunks for content, count:", chunks.length);
-      fileContent = chunks.map(chunk => chunk.text).join("\n\n");
+      fileContent = chunks.map((chunk) => chunk.text).join("\n\n");
       console.log("🔍 Debug: Combined content length:", fileContent.length);
-      console.log("🔍 Debug: Content preview:", fileContent.substring(0, 200) + "...");
+      console.log(
+        "🔍 Debug: Content preview:",
+        fileContent.substring(0, 200) + "...",
+      );
     }
 
     // Split content into sections for podcast
-    const sections: PodcastSectionInput[] = await createPodcastSections(fileContent, file.name);
+    const sections: PodcastSectionInput[] = await createPodcastSections(
+      fileContent,
+      file.name,
+    );
 
     // Create podcast in database
     const podcast = await db.podcast.create({
@@ -135,7 +161,7 @@ export async function POST(request: NextRequest) {
             order: index,
           },
         });
-      })
+      }),
     );
 
     // Generate audio for the single section
@@ -145,7 +171,9 @@ export async function POST(request: NextRequest) {
     try {
       console.log(`🎙️ Generating audio for: ${section.title}`);
       console.log(`📝 Content length: ${section.content.length} characters`);
-      console.log(`📝 Content preview: ${section.content.substring(0, 200)}...`);
+      console.log(
+        `📝 Content preview: ${section.content.substring(0, 200)}...`,
+      );
 
       // Check if we have valid content
       if (!section.content || section.content.trim().length === 0) {
@@ -160,7 +188,9 @@ export async function POST(request: NextRequest) {
         throw new Error("Generated audio buffer is empty");
       }
 
-      console.log(`🔍 Debug: Audio buffer is valid, size: ${audioBuffer.length} bytes`);
+      console.log(
+        `🔍 Debug: Audio buffer is valid, size: ${audioBuffer.length} bytes`,
+      );
 
       // Use the old UUID-based format for now to ensure compatibility
       const filename = `${podcast.id}-${section.id}.wav`;
@@ -170,9 +200,15 @@ export async function POST(request: NextRequest) {
       console.log(`✅ Audio uploaded to: ${audioUrl}`);
 
       // Verify the file was actually created
-      const { existsSync } = await import('fs');
-      const { join } = await import('path');
-      const filePath = join(process.cwd(), 'public', 'uploads', 'audio', filename);
+      const { existsSync } = await import("fs");
+      const { join } = await import("path");
+      const filePath = join(
+        process.cwd(),
+        "public",
+        "uploads",
+        "audio",
+        filename,
+      );
       const fileExists = existsSync(filePath);
       console.log(`🔍 Debug: Audio file exists on disk: ${fileExists}`);
       console.log(`🔍 Debug: File path: ${filePath}`);
@@ -194,10 +230,15 @@ export async function POST(request: NextRequest) {
       });
 
       console.log(`✅ Section updated with audio URL: ${audioUrl}`);
-
     } catch (error: unknown) {
-      console.error(`❌ Error generating audio for section ${section.id}:`, error);
-      console.error(`❌ Error details:`, error instanceof Error ? error.message : error);
+      console.error(
+        `❌ Error generating audio for section ${section.id}:`,
+        error,
+      );
+      console.error(
+        `❌ Error details:`,
+        error instanceof Error ? error.message : error,
+      );
 
       // Create a fallback URL but log that it's not real
       const filename = `${podcast.id}-${section.id}.wav`;
@@ -229,16 +270,18 @@ export async function POST(request: NextRequest) {
 
     // Calculate total duration based on actual content length
     // Estimate: ~150 words per minute for speech
-    const words = section.content.split(' ').length;
+    const words = section.content.split(" ").length;
     const estimatedMinutes = words / 150; // words per minute
     const totalDurationSeconds = estimatedMinutes * 60;
-    console.log(`Content: ${words} words, estimated duration: ${estimatedMinutes.toFixed(1)} minutes`);
+    console.log(
+      `Content: ${words} words, estimated duration: ${estimatedMinutes.toFixed(1)} minutes`,
+    );
 
     // Update podcast with calculated duration
     await db.podcast.update({
       where: { id: podcast.id },
       data: {
-        totalDuration: formatDuration(totalDurationSeconds)
+        totalDuration: formatDuration(totalDurationSeconds),
       },
     });
 
@@ -256,12 +299,11 @@ export async function POST(request: NextRequest) {
         totalDuration: formatDuration(totalDurationSeconds),
       },
     });
-
   } catch (error: unknown) {
     console.error("Error creating podcast:", error);
     return NextResponse.json(
       { error: "Failed to create podcast" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

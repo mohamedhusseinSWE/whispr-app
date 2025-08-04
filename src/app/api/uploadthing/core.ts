@@ -80,9 +80,7 @@ const onUploadComplete = async ({
       data: { uploadStatus: "SUCCESS" },
     });
 
-    console.log(
-      `✅ Upload complete (File ID: ${createdFile.id})`,
-    );
+    console.log(`✅ Upload complete (File ID: ${createdFile.id})`);
   } catch (error) {
     console.error("❌ Error processing PDF:", error);
     await db.file.update({
