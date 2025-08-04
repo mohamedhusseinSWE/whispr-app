@@ -76,11 +76,8 @@ export default function QuizPage({ params }: QuizPageProps) {
           id: fileData.file.id,
           name: fileData.file.name,
           url: fileData.file.url,
-          type:
-            "type" in fileData.file
-              ? (fileData.file as any).type
-              : "application/pdf",
-          size: "size" in fileData.file ? (fileData.file as any).size : 0,
+          type: fileData.file.type || "application/pdf",
+          size: fileData.file.size || 0,
         });
       }
     } catch (error) {
