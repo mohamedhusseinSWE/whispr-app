@@ -4,8 +4,17 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
+interface TestResult {
+  success?: boolean;
+  error?: string;
+  message?: string;
+  size?: string | null;
+  type?: string | null;
+  audioFiles?: string[];
+}
+
 export default function TestAudioPage() {
-  const [testResult, setTestResult] = useState<any>(null);
+  const [testResult, setTestResult] = useState<TestResult | null>(null);
   const [loading, setLoading] = useState(false);
 
   const testAudioAPI = async () => {

@@ -11,14 +11,10 @@ import { trpc } from "@/app/_trpc/client";
 import { useRouter } from "next/navigation";
 
 interface UploadButtonProps {
-  isSubscribed: boolean;
   disabled?: boolean;
 }
 
-const UploadButton = ({
-  isSubscribed,
-  disabled = false,
-}: UploadButtonProps) => {
+const UploadButton = ({ disabled = false }: UploadButtonProps) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [isOpen, setIsOpen] = useState(false);

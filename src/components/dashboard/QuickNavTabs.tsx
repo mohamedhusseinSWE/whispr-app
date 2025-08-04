@@ -99,8 +99,8 @@ const QuickNavTabs: React.FC<QuickNavTabsProps> = ({ fileId, currentPage }) => {
               [endpoint.key]: "ready",
             }));
           }
-        } catch (error) {
-          console.error(`Error checking ${endpoint.key} status:`, error);
+        } catch {
+          // Silently handle errors when checking generation status
         }
       }
     };

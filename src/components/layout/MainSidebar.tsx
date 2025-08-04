@@ -9,17 +9,9 @@ import Image from "next/image";
 
 interface MainSidebarProps {
   sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-  activeView: string;
-  setActiveView: (view: string) => void;
 }
 
-const MainSidebar: React.FC<MainSidebarProps> = ({
-  sidebarOpen,
-  setSidebarOpen,
-  activeView,
-  setActiveView,
-}) => {
+const MainSidebar: React.FC<MainSidebarProps> = ({ sidebarOpen }) => {
   const router = useRouter();
   const pathname = usePathname();
   const { data: user } = trpc.auth.me.useQuery();
@@ -35,7 +27,6 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
   ];
 
   const handleNavigation = (item: (typeof mainSidebarItems)[0]) => {
-    setActiveView(item.id);
     router.push(item.href);
   };
 
@@ -63,19 +54,8 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
               </span>
             )}
           </Link>
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1 hover:bg-gray-100 rounded transition-colors"
-          >
-            {sidebarOpen ? (
-              <X className="w-4 h-4" />
-            ) : (
-              <Menu className="w-4 h-4" />
-            )}
-          </button>
         </div>
       </div>
-
       {/* Navigation - Scrollable */}
       <nav className="flex-1 overflow-y-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100 hover:scrollbar-thumb-gray-400">
         <div className="py-4 space-y-1">
@@ -100,7 +80,6 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
           })}
         </div>
       </nav>
-
       {/* Bottom Section - Fixed */}
       <div className="flex-shrink-0 p-4 border-t border-gray-100">
         {sidebarOpen ? (
@@ -114,17 +93,10 @@ const MainSidebar: React.FC<MainSidebarProps> = ({
               <p className="text-sm font-medium text-gray-900 truncate">
                 {user?.name || "User"}
               </p>
+              <p className="text-xs text-gray-500 truncate">{user?.email}</p>
             </div>
           </div>
-        ) : (
-          <div className="flex justify-center">
-            <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
-              <span className="text-white text-sm font-medium">
-                {user?.name?.charAt(0).toUpperCase() || "U"}
-              </span>
-            </div>
-          </div>
-        )}
+        ) : null}
       </div>
     </div>
   );

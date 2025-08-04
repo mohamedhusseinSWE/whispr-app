@@ -11,20 +11,12 @@ interface FileData {
   url: string;
 }
 
-interface Flashcard {
-  id: string;
-  question: string;
-  answer: string;
-}
-
 interface FlashcardsPageWithSidebarProps {
   file: FileData;
-  flashcards: Flashcard[] | null;
 }
 
 export default function FlashcardsPageWithSidebar({
   file,
-  flashcards,
 }: FlashcardsPageWithSidebarProps) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("flashcards");
@@ -36,7 +28,6 @@ export default function FlashcardsPageWithSidebar({
       {/* Sidebar */}
       <PDFSidebar
         sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
         activeView={activeView}
         setActiveView={setActiveView}
         fileId={file.id}

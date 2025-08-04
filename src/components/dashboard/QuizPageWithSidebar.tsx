@@ -8,6 +8,24 @@ import { Button } from "@/components/ui/button";
 import { Loader2, BookOpen, RefreshCw } from "lucide-react";
 import { getQuiz } from "@/lib/actions";
 
+// Match the Prisma schema structure
+interface QuizQuestion {
+  id: string;
+  quizId: string;
+  question: string;
+  options: string[];
+  answer: string; // This stores the correct answer (e.g., "A", "B", "C", "D")
+  createdAt: Date;
+}
+
+interface Quiz {
+  id: string;
+  fileId: string;
+  title: string;
+  createdAt: Date;
+  questions: QuizQuestion[];
+}
+
 interface QuizPageWithSidebarProps {
   file: { id: string; name: string; type: string; size: number; url: string };
 }
@@ -19,7 +37,7 @@ export default function QuizPageWithSidebar({
   const [activeView, setActiveView] = useState("quiz");
   const [loading, setLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("");
-  const [quiz, setQuiz] = useState<any>(null);
+  const [quiz, setQuiz] = useState<Quiz | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
 
@@ -39,13 +57,18 @@ export default function QuizPageWithSidebar({
           setError(
             "No quiz found. Click 'Generate Quiz' to create one from your PDF content.",
           );
-        } else {
+        } else if (quizData.quiz) {
           console.log("Quiz loaded successfully:", quizData.quiz);
           setQuiz(quizData.quiz);
+        } else {
+          setQuiz(null);
+          setError("Failed to load quiz data");
         }
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("Error fetching quiz:", err);
-        setError(err.message || "Failed to fetch quiz");
+        const errorMessage =
+          err instanceof Error ? err.message : "Failed to fetch quiz";
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -108,12 +131,17 @@ export default function QuizPageWithSidebar({
         setError(
           "No quiz found. Click 'Generate Quiz' to create one from your PDF content.",
         );
-      } else {
+      } else if (quizData.quiz) {
         setQuiz(quizData.quiz);
+      } else {
+        setQuiz(null);
+        setError("Failed to load quiz data");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error refreshing quiz:", err);
-      setError(err.message || "Failed to refresh quiz");
+      const errorMessage =
+        err instanceof Error ? err.message : "Failed to refresh quiz";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -123,7 +151,6 @@ export default function QuizPageWithSidebar({
     <div className="flex h-[calc(100vh-3.5rem)]">
       <PDFSidebar
         sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
         activeView={activeView}
         setActiveView={setActiveView}
         fileId={file.id}

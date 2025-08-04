@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import MaxWidthWrapper from "./MaxWidthWrapper";
 import { Button, buttonVariants } from "./ui/button";
 import { toast } from "sonner";
@@ -36,11 +35,6 @@ const Navbar = () => {
     refetchOnWindowFocus: true, // Refetch when window gains focus
     refetchOnMount: true, // Always refetch on component mount
   });
-
-  // Helper function to refresh user data - can be called from login components
-  const refreshUserData = async () => {
-    await utils.auth.me.invalidate();
-  };
 
   const logout = trpc.auth.logout.useMutation({
     onSuccess: async () => {

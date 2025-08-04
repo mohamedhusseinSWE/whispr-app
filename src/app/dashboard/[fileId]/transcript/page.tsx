@@ -6,16 +6,15 @@ import { Button } from "@/components/ui/button";
 import { Loader2, BookOpen } from "lucide-react";
 import { getTranscript, getFileData } from "@/lib/actions";
 
-interface Transcript {
-  id: string;
-  title: string;
-  content: string;
-}
-
 interface File {
   id: string;
   name: string;
   url: string;
+  key: string;
+  uploadStatus: string;
+  createdAt: Date;
+  updatedAt: Date;
+  userId: string | null;
 }
 
 interface TranscriptPageProps {
@@ -55,7 +54,7 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
         setError(transcriptData.error);
         setTranscript(null);
       } else {
-        setTranscript(transcriptData.transcript);
+        setTranscript(transcriptData.transcript?.content || null);
       }
 
       if (!fileData.file) {
@@ -85,7 +84,7 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
 
       if (response.ok) {
         const data = await response.json();
-        setTranscript(data.transcript);
+        setTranscript(data.transcript?.content || null);
       } else {
         const errorData = await response.json();
         setError(
@@ -170,5 +169,15 @@ export default function TranscriptPage({ params }: TranscriptPageProps) {
     );
   }
 
-  return <TranscriptPageWithSidebar file={file} />;
+  return (
+    <TranscriptPageWithSidebar
+      file={{
+        id: file.id,
+        name: file.name,
+        type: "pdf", // Default type since it's not in the model
+        size: 0, // Default size since it's not in the model
+        uploadedAt: file.createdAt.toISOString(),
+      }}
+    />
+  );
 }

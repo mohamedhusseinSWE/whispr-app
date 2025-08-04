@@ -134,7 +134,6 @@ export default function TranscriptPageWithSidebar({
     <div className="flex h-[calc(100vh-3.5rem)]">
       <PDFSidebar
         sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
         activeView={activeView}
         setActiveView={setActiveView}
         fileId={file.id}

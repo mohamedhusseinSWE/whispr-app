@@ -47,7 +47,6 @@ export default function PodcastPageWithSidebar({
       {/* PDF Sidebar */}
       <PDFSidebar
         sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
         activeView={activeView}
         setActiveView={setActiveView}
         fileId={file.id}

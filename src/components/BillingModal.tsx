@@ -20,7 +20,7 @@ import { Button } from "./ui/button";
 import { Loader2, Crown, Check } from "lucide-react";
 import { format } from "date-fns";
 
-interface SubscriptionPlan {
+export interface SubscriptionPlan {
   name?: string;
   slug?: string;
   quota?: number;
@@ -34,7 +34,7 @@ interface SubscriptionPlan {
   };
   isSubscribed: boolean;
   isCanceled: boolean;
-  stripeCurrentPeriodEnd: string | null;
+  stripeCurrentPeriodEnd: Date | null;
   stripeSubscriptionId?: string | null;
   stripeCustomerId?: string | null;
 }

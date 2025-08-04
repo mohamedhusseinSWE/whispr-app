@@ -3,8 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 
 const openai = new OpenAI({
-  apiKey: process.env.OPENROUTER_API_KEY,
-  baseURL: "https://openrouter.ai/api/v1",
+  apiKey: process.env.OPENAI_API_KEY, // use your OpenAI key here
+  // No need to set baseURL – default points to OpenAI
 });
 
 export async function POST(req: NextRequest) {
@@ -432,7 +432,7 @@ Create a well-structured transcript now:`;
       transcript,
       message: "All content generated and saved successfully",
     });
-  } catch (error) {
+  } catch {
     console.error("API error:");
     return NextResponse.json(
       { error: "Failed to create content" },

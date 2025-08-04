@@ -5,8 +5,9 @@ import PdfRenderer from "@/components/PdfRenderer";
 import ChatWrapper from "@/components/chat/ChatWrapper";
 import QuickNavTabs from "@/components/dashboard/QuickNavTabs";
 import { Loader2 } from "lucide-react";
+import type { File } from "@prisma/client";
 
-export default function PDFPageWithSidebar({ file }: { file: any }) {
+export default function PDFPageWithSidebar({ file }: { file: File }) {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [activeView, setActiveView] = useState("chatbot");
   const [loading, setLoading] = useState(false);
@@ -17,7 +18,6 @@ export default function PDFPageWithSidebar({ file }: { file: any }) {
       {/* PDF Sidebar */}
       <PDFSidebar
         sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
         activeView={activeView}
         setActiveView={setActiveView}
         fileId={file.id}

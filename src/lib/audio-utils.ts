@@ -22,9 +22,6 @@ export function generateAudioFilename(
  * if the new file doesn't exist
  */
 export function generateAudioUrl(podcastId: string, sectionId: string): string {
-  // Try the new hash-based filename first
-  const newFilename = generateAudioFilename(podcastId, sectionId);
-
   // Also generate the old UUID-based filename as fallback
   const oldFilename = `${podcastId}-${sectionId}.wav`;
 

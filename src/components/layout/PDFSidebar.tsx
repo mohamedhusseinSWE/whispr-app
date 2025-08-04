@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import BillingModal from "../BillingModal";
+import BillingModal, { type SubscriptionPlan } from "../BillingModal";
 import { getSubscriptionPlan } from "@/lib/actions";
 import { trpc } from "@/app/_trpc/client";
 
@@ -93,9 +93,8 @@ export function QuizPanel({ quiz }: QuizPanelProps) {
   );
 }
 
-const PDFSidebar: React.FC<PDFSidebarProps> = ({
+const PDFSidebar: React.FC<Omit<PDFSidebarProps, "setSidebarOpen">> = ({
   sidebarOpen,
-  setSidebarOpen,
   activeView,
   setActiveView,
   fileId,
@@ -105,7 +104,8 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
   const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
-  const [subscriptionPlan, setSubscriptionPlan] = useState<any>(null);
+  const [subscriptionPlan, setSubscriptionPlan] =
+    useState<SubscriptionPlan | null>(null);
   const { data: user } = trpc.auth.me.useQuery();
 
   // Fetch subscription plan on component mount
@@ -115,7 +115,8 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
         const { subscriptionPlan: plan } = await getSubscriptionPlan();
         setSubscriptionPlan(plan);
       } catch (error) {
-        console.error("Error fetching subscription plan:", error);
+        const errorObj = error as Error;
+        console.error("Error fetching subscription plan:", errorObj);
         // Set default plan if error occurs
         setSubscriptionPlan({
           name: "Free",
@@ -172,9 +173,10 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
 
         const data = await response.json();
         console.log("Content generated successfully:", data.message);
-      } catch (err: any) {
-        console.error("Error creating content:", err);
-        setError(err.message || "An unexpected error occurred.");
+      } catch (err) {
+        const errorObj = err as Error;
+        console.error("Error creating content:", errorObj);
+        setError(errorObj.message || "An unexpected error occurred.");
       } finally {
         setLoading(false);
       }
@@ -201,9 +203,10 @@ const PDFSidebar: React.FC<PDFSidebarProps> = ({
             `Failed to create podcast: ${response.status} - ${errorData.error || "Unknown error"}`,
           );
         }
-      } catch (err: any) {
-        console.error("Error creating podcast:", err);
-        setError(err.message || "An unexpected error occurred.");
+      } catch (err) {
+        const errorObj = err as Error;
+        console.error("Error creating podcast:", errorObj);
+        setError(errorObj.message || "An unexpected error occurred.");
       } finally {
         setLoading(false);
       }

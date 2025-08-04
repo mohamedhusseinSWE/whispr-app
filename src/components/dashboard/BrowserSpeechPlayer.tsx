@@ -16,7 +16,6 @@ import {
 
 interface BrowserSpeechPlayerProps {
   text: string;
-  title: string;
   onTimeUpdate?: (currentTime: number, duration: number) => void;
   onPlay?: () => void;
   onPause?: () => void;
@@ -25,7 +24,6 @@ interface BrowserSpeechPlayerProps {
 
 export default function BrowserSpeechPlayer({
   text,
-  title,
   onTimeUpdate,
   onPlay,
   onPause,
@@ -41,6 +39,7 @@ export default function BrowserSpeechPlayer({
   const [speechSupported, setSpeechSupported] = useState(false);
   const speechRef = useRef<SpeechSynthesisUtterance | null>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const startTimeRef = useRef<number | null>(null);
 
   useEffect(() => {
     // Check if speech synthesis is supported
@@ -79,6 +78,7 @@ export default function BrowserSpeechPlayer({
       utterance.onstart = () => {
         setIsPlaying(true);
         setIsLoading(false);
+        startTimeRef.current = Date.now();
         onPlay?.();
         console.log("🎙️ Speech started");
       };
@@ -86,6 +86,7 @@ export default function BrowserSpeechPlayer({
       utterance.onend = () => {
         setIsPlaying(false);
         setCurrentTime(0);
+        startTimeRef.current = null;
         onEnded?.();
         console.log("🎙️ Speech ended");
       };
@@ -132,11 +133,8 @@ export default function BrowserSpeechPlayer({
 
     // Update progress every 100ms
     intervalRef.current = setInterval(() => {
-      if (speechRef.current && isPlaying) {
-        const elapsed =
-          (Date.now() -
-            (speechRef.current as SpeechSynthesisUtterance).startTime) /
-          1000;
+      if (speechRef.current && isPlaying && startTimeRef.current) {
+        const elapsed = (Date.now() - startTimeRef.current) / 1000;
         const newTime = Math.min(elapsed, estimatedDuration);
         setCurrentTime(newTime);
         onTimeUpdate?.(newTime, estimatedDuration);
@@ -149,6 +147,7 @@ export default function BrowserSpeechPlayer({
       clearInterval(intervalRef.current);
       intervalRef.current = null;
     }
+    startTimeRef.current = null;
   };
 
   const togglePlayPause = () => {
@@ -163,24 +162,6 @@ export default function BrowserSpeechPlayer({
         startSpeech();
       }
     }
-  };
-
-  const handleSeek = (value: number) => {
-    // Note: Seeking is not supported in speech synthesis
-    // This is a limitation of the Web Speech API
-    console.log("Seeking not supported in speech synthesis");
-  };
-
-  const handleSkipForward = () => {
-    // Note: Skipping is not supported in speech synthesis
-    // This is a limitation of the Web Speech API
-    console.log("Skipping not supported in speech synthesis");
-  };
-
-  const handleSkipBack = () => {
-    // Note: Skipping is not supported in speech synthesis
-    // This is a limitation of the Web Speech API
-    console.log("Skipping not supported in speech synthesis");
   };
 
   const toggleMute = () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -57,26 +57,7 @@ const PodcastPanel: React.FC<PodcastPanelProps> = ({
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const currentSectionRef = useRef<PodcastSection | null>(null);
 
-  useEffect(() => {
-    if (!initialPodcast) {
-      fetchPodcast();
-    } else if (initialPodcast.sections.length > 0) {
-      setCurrentSection(initialPodcast.sections[0]);
-      currentSectionRef.current = initialPodcast.sections[0];
-    }
-  }, [fileId, initialPodcast]);
-
-  // Cleanup audio on unmount
-  useEffect(() => {
-    return () => {
-      if (audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current = null;
-      }
-    };
-  }, []);
-
-  const fetchPodcast = async () => {
+  const fetchPodcast = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -102,7 +83,26 @@ const PodcastPanel: React.FC<PodcastPanelProps> = ({
     } finally {
       setLoading(false);
     }
-  };
+  }, [fileId]);
+
+  useEffect(() => {
+    if (!initialPodcast) {
+      fetchPodcast();
+    } else if (initialPodcast.sections.length > 0) {
+      setCurrentSection(initialPodcast.sections[0]);
+      currentSectionRef.current = initialPodcast.sections[0];
+    }
+  }, [fileId, initialPodcast, fetchPodcast]);
+
+  // Cleanup audio on unmount
+  useEffect(() => {
+    return () => {
+      if (audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current = null;
+      }
+    };
+  }, []);
 
   const setupAudio = (audioUrl: string) => {
     console.log("Setting up audio with URL:", audioUrl);

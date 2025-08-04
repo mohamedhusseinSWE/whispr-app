@@ -25,7 +25,6 @@ import Link from "next/link";
 import BillingModal from "./BillingModal";
 
 const Dashboard = () => {
-  const [activeView, setActiveView] = useState("dashboard");
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [currentlyDeletingFile, setCurrentlyDeletingFile] = useState<
     string | null
@@ -149,162 +148,150 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-screen bg-gray-50">
-      <MainSidebar
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-        activeView={activeView}
-        setActiveView={setActiveView}
-      />
+      <MainSidebar sidebarOpen={sidebarOpen} />
 
       <div
-        className={`flex-1 overflow-auto ${sidebarOpen ? "ml-64" : "ml-16"} transition-all duration-300`}
+        className={`flex-1 overflow-auto ${
+          sidebarOpen ? "ml-64" : "ml-16"
+        } transition-all duration-300`}
       >
         <Header title="Dashboard" subtitle="Create new notes" />
 
         <div className="p-6 max-w-7xl mx-auto">
-          {activeView === "dashboard" && (
-            <>
-              {/* Features Section */}
-              <div className="mb-8">
-                <div className="mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    Quick Actions
-                  </h2>
-                  <p className="text-gray-600">
-                    Choose what you&apos;d like to do with your documents
-                  </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-                  {quickActions.map((action) => (
-                    <div
-                      key={action.id}
-                      onClick={() => handleQuickAction(action)}
-                      className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer group bg-white"
-                    >
-                      <div className="flex items-start gap-3">
-                        <div className={`p-2 rounded-lg ${action.bgColor}`}>
-                          <action.icon
-                            className={`w-5 h-5 ${action.iconColor}`}
-                          />
-                        </div>
-                        <div className="flex-1">
-                          <h4 className="font-medium text-gray-900 mb-1">
-                            {action.title}
-                          </h4>
-                          <p className="text-sm text-gray-600">
-                            {action.description}
-                          </p>
-                        </div>
-                      </div>
+          {/* Features Section */}
+          <div className="mb-8">
+            <div className="mb-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                Quick Actions
+              </h2>
+              <p className="text-gray-600">
+                Choose what you&apos;d like to do with your documents
+              </p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+              {quickActions.map((action) => (
+                <div
+                  key={action.id}
+                  onClick={() => handleQuickAction(action)}
+                  className="p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all cursor-pointer group bg-white"
+                >
+                  <div className="flex items-start gap-3">
+                    <div className={`p-2 rounded-lg ${action.bgColor}`}>
+                      <action.icon className={`w-5 h-5 ${action.iconColor}`} />
                     </div>
-                  ))}
-                </div>
-              </div>
-
-              {/* Free Plan Limit Warning */}
-              {hasReachedFreeLimit && (
-                <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Crown className="w-5 h-5 text-yellow-600" />
                     <div className="flex-1">
-                      <h3 className="font-medium text-yellow-800">
-                        You&apos;ve reached your free plan limit!
-                      </h3>
-                      <p className="text-sm text-yellow-700 mt-1">
-                        Upgrade to PRO to upload unlimited PDFs and unlock all
-                        features.
+                      <h4 className="font-medium text-gray-900 mb-1">
+                        {action.title}
+                      </h4>
+                      <p className="text-sm text-gray-600">
+                        {action.description}
                       </p>
                     </div>
-                    <Button
-                      onClick={() => setShowUpgradeModal(true)}
-                      size="sm"
-                      className="bg-yellow-600 hover:bg-yellow-700 text-white"
-                    >
-                      Upgrade Now
-                    </Button>
                   </div>
                 </div>
-              )}
+              ))}
+            </div>
+          </div>
 
-              <div className="flex justify-end my-4">
-                <UploadButton
-                  isSubscribed={isSubscribed}
-                  disabled={hasReachedFreeLimit}
-                />
-              </div>
-
-              {files && files.length !== 0 ? (
-                <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
-                  {files
-                    .sort(
-                      (a, b) =>
-                        new Date(b.createdAt).getTime() -
-                        new Date(a.createdAt).getTime(),
-                    )
-                    .map((file) => (
-                      <li
-                        key={file.id}
-                        className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow transition hover:shadow-lg"
-                      >
-                        <Link
-                          href={`/dashboard/${file.id}`}
-                          className="flex flex-col gap-2"
-                        >
-                          <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
-                            <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
-                            <div className="flex-1 truncate">
-                              <div className="flex items-center space-x-3">
-                                <h3 className="truncate text-lg font-medium text-zinc-900">
-                                  {file.name}
-                                </h3>
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
-
-                        <div className="px-6 mt-4 grid grid-cols-3 place-items-center py-2 gap-6 text-xs text-zinc-500">
-                          <div className="flex items-center gap-2">
-                            <Plus className="h-4 w-4" />
-                            {format(new Date(file.createdAt), "MMM yyyy")}
-                          </div>
-
-                          <div className="flex items-center gap-2">
-                            <MessageSquare className="h-4 w-4" />
-                            mocked
-                          </div>
-
-                          <Button
-                            onClick={(e) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              deleteFile({ id: file.id });
-                            }}
-                            size="sm"
-                            className="w-full"
-                            variant="destructive"
-                          >
-                            {currentlyDeletingFile === file.id ? (
-                              <Loader2 className="h-4 w-4 animate-spin" />
-                            ) : (
-                              <Trash className="h-4 w-4" />
-                            )}
-                          </Button>
-                        </div>
-                      </li>
-                    ))}
-                </ul>
-              ) : filesLoading ? (
-                <Skeleton height={100} className="my-2" count={3} />
-              ) : (
-                <div className="mt-16 flex flex-col items-center gap-2">
-                  <Ghost className="h-8 w-8 text-zinc-800" />
-                  <h3 className="font-semibold text-xl">
-                    Pretty empty around here
+          {/* Free Plan Limit Warning */}
+          {hasReachedFreeLimit && (
+            <div className="mt-4 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center gap-3">
+                <Crown className="w-5 h-5 text-yellow-600" />
+                <div className="flex-1">
+                  <h3 className="font-medium text-yellow-800">
+                    You&apos;ve reached your free plan limit!
                   </h3>
-                  <p>Let&apos;s upload your first PDF.</p>
+                  <p className="text-sm text-yellow-700 mt-1">
+                    Upgrade to PRO to upload unlimited PDFs and unlock all
+                    features.
+                  </p>
                 </div>
-              )}
-            </>
+                <Button
+                  onClick={() => setShowUpgradeModal(true)}
+                  size="sm"
+                  className="bg-yellow-600 hover:bg-yellow-700 text-white"
+                >
+                  Upgrade Now
+                </Button>
+              </div>
+            </div>
+          )}
+
+          <div className="flex justify-end my-4">
+            <UploadButton disabled={hasReachedFreeLimit} />
+          </div>
+
+          {files && files.length !== 0 ? (
+            <ul className="mt-8 grid grid-cols-1 gap-6 divide-y divide-zinc-200 md:grid-cols-2 lg:grid-cols-3">
+              {files
+                .sort(
+                  (a, b) =>
+                    new Date(b.createdAt).getTime() -
+                    new Date(a.createdAt).getTime(),
+                )
+                .map((file) => (
+                  <li
+                    key={file.id}
+                    className="col-span-1 divide-y divide-gray-200 rounded-lg bg-white shadow transition hover:shadow-lg"
+                  >
+                    <Link
+                      href={`/dashboard/${file.id}`}
+                      className="flex flex-col gap-2"
+                    >
+                      <div className="pt-6 px-6 flex w-full items-center justify-between space-x-6">
+                        <div className="h-10 w-10 flex-shrink-0 rounded-full bg-gradient-to-r from-cyan-500 to-blue-500" />
+                        <div className="flex-1 truncate">
+                          <div className="flex items-center space-x-3">
+                            <h3 className="truncate text-lg font-medium text-zinc-900">
+                              {file.name}
+                            </h3>
+                          </div>
+                        </div>
+                      </div>
+                    </Link>
+
+                    <div className="px-6 mt-4 grid grid-cols-3 place-items-center py-2 gap-6 text-xs text-zinc-500">
+                      <div className="flex items-center gap-2">
+                        <Plus className="h-4 w-4" />
+                        {format(new Date(file.createdAt), "MMM yyyy")}
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <MessageSquare className="h-4 w-4" />
+                        mocked
+                      </div>
+
+                      <Button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          deleteFile({ id: file.id });
+                        }}
+                        size="sm"
+                        className="w-full"
+                        variant="destructive"
+                      >
+                        {currentlyDeletingFile === file.id ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Trash className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </li>
+                ))}
+            </ul>
+          ) : filesLoading ? (
+            <Skeleton height={100} className="my-2" count={3} />
+          ) : (
+            <div className="mt-16 flex flex-col items-center gap-2">
+              <Ghost className="h-8 w-8 text-zinc-800" />
+              <h3 className="font-semibold text-xl">
+                Pretty empty around here
+              </h3>
+              <p>Let&apos;s upload your first PDF.</p>
+            </div>
           )}
         </div>
       </div>
@@ -314,7 +301,12 @@ const Dashboard = () => {
         <BillingModal
           isOpen={showUpgradeModal}
           onClose={() => setShowUpgradeModal(false)}
-          subscriptionPlan={subscriptionPlan}
+          subscriptionPlan={{
+            ...subscriptionPlan,
+            stripeCurrentPeriodEnd: subscriptionPlan.stripeCurrentPeriodEnd
+              ? new Date(subscriptionPlan.stripeCurrentPeriodEnd)
+              : null,
+          }}
         />
       )}
     </div>

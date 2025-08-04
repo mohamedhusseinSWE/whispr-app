@@ -185,7 +185,7 @@ Generate the quiz now:`;
           }
         }
       } catch (error: unknown) {
-        console.error(`Error in attempt ${attempts}`);
+        console.error(`Error in attempt ${attempts}:`, error);
         if (attempts < maxAttempts) {
           await new Promise((resolve) => setTimeout(resolve, 2000));
         }

@@ -26,7 +26,7 @@ interface AudioPlayerProps {
 
 export default function AudioPlayer({
   audioUrl,
-  title,
+  title: _title, // Prefix with underscore to indicate intentionally unused
   onTimeUpdate,
   onPlay,
   onPause,
@@ -84,7 +84,7 @@ export default function AudioPlayer({
       onEnded?.();
     };
 
-    const handleError = (e: Event) => {
+    const handleError = (_e: Event) => {
       console.log("🎵 AudioPlayer: Audio error occurred");
       const audio = audioRef.current;
 
@@ -153,7 +153,7 @@ export default function AudioPlayer({
     if (isPlaying) {
       audio.pause();
     } else {
-      audio.play().catch((err) => {
+      audio.play().catch((_err) => {
         // Silent error handling - no console.error calls
         setError("Failed to play audio. Please try again.");
       });
