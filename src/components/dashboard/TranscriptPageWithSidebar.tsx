@@ -11,9 +11,6 @@ interface TranscriptPageWithSidebarProps {
   file: {
     id: string;
     name: string;
-    type: string;
-    size: number;
-    uploadedAt: string;
   };
 }
 

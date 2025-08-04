@@ -27,7 +27,7 @@ interface Quiz {
 }
 
 interface QuizPageWithSidebarProps {
-  file: { id: string; name: string; type: string; size: number; url: string };
+  file: { id: string; name: string; url: string };
 }
 
 export default function QuizPageWithSidebar({
