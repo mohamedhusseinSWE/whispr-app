@@ -249,7 +249,7 @@ export default function QuizPanel({ quiz }: QuizPanelProps) {
                     🎉 Quiz Completed!
                   </h3>
                   <p className="text-gray-600">
-                    Great job! Here's how you performed:
+                    Great job! Here&apos;s how you performed:
                   </p>
                 </div>
 
