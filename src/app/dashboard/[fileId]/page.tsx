@@ -2,7 +2,7 @@ import PDFPageWithSidebar from "@/components/dashboard/PDFPageWithSidebar";
 import { db } from "@/db";
 
 type PageProps = {
-  params: { fileId: string };
+  params: Promise<{ fileId: string }>;
 };
 
 export default async function Page({ params }: PageProps) {
