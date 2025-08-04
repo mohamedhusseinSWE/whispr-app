@@ -54,8 +54,6 @@ export async function getFileData(fileId: string) {
       select: {
         id: true,
         name: true,
-        type: true,
-        size: true,
         url: true,
       },
     });

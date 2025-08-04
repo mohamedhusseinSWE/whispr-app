@@ -10,11 +10,6 @@ interface File {
   id: string;
   name: string;
   url: string;
-  key: string;
-  uploadStatus: string;
-  createdAt: Date;
-  updatedAt: Date;
-  userId: string | null;
 }
 
 interface TranscriptPageProps {
