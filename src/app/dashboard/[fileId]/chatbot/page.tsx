@@ -77,7 +77,6 @@ export default function ChatbotPage({ params }: ChatbotPageProps) {
       {/* PDF Sidebar */}
       <PDFSidebar
         sidebarOpen={true}
-        setSidebarOpen={() => {}}
         activeView="chatbot"
         setActiveView={() => {}}
         fileId={file.id}

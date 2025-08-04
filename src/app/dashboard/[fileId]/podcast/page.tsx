@@ -185,5 +185,20 @@ export default function PodcastPage({ params }: PodcastPageProps) {
     podcast,
   );
 
-  return <PodcastPageWithSidebar file={file} podcast={podcast} />;
+  // Transform podcast to match PodcastPageWithSidebar's expected Podcast type
+  const transformedPodcast = podcast
+    ? {
+        ...podcast,
+        sections: podcast.sections.map((section) => ({
+          id: section.id,
+          title: section.title,
+          description: "", // default value
+          content: "",     // default value
+          duration: "",    // default value
+          audioUrl: section.audioUrl ?? null,
+        })),
+      }
+    : undefined;
+
+  return <PodcastPageWithSidebar file={file} podcast={transformedPodcast} />;
 }
